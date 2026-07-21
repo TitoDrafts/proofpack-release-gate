@@ -39,10 +39,22 @@ function ExportPreview({
         <code>{markdown}</code>
       </pre>
       <div className="button-row">
-        <button className="button button-secondary" type="button" disabled={disabled} onClick={() => onCopy(kind)}>
+        <button
+          className="button button-secondary"
+          type="button"
+          aria-label={`Copy ${title} Markdown`}
+          disabled={disabled}
+          onClick={() => onCopy(kind)}
+        >
           Copy Markdown
         </button>
-        <button className="button button-secondary" type="button" disabled={disabled} onClick={() => onDownload(kind)}>
+        <button
+          className="button button-secondary"
+          type="button"
+          aria-label={`Download ${title} Markdown`}
+          disabled={disabled}
+          onClick={() => onDownload(kind)}
+        >
           Download .md
         </button>
       </div>
