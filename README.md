@@ -22,7 +22,7 @@ Submission media:
 Submission receipt:
 
 <!-- proofpack-receipt:start -->
-`2b47466fd8e5db4c4f8b57b452476896e7374f33f861097cfa499185e29a5196`
+`2e34b4ad66f0e05fe09c79d8042e422ea724072681c1fe9d8dc5dadf86692703`
 <!-- proofpack-receipt:end -->
 
 Recompute it with `npm run receipt:submission`; read the exact scope and self-reference normalization in [docs/SUBMISSION_RECEIPT.md](docs/SUBMISSION_RECEIPT.md). This submission ships with its own receipt because evidence lineage is the point.
