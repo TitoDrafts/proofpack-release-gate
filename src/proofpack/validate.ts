@@ -9,6 +9,10 @@ import type {
 } from "./types.ts";
 
 type UnknownRecord = Record<string, unknown>;
+interface IndexedRecord {
+  value: UnknownRecord;
+  index: number;
+}
 
 const claimKinds = new Set<ClaimKind>(["direct", "inference", "exclusive", "gate"]);
 const effects = new Set<EvidenceEffect>(["SUPPORT", "CONTRADICT", "BLOCK", "ASSERT_VALUE"]);
@@ -17,7 +21,11 @@ const safetyLabels = new Set<SafetyLabel>(["PUBLIC", "RESTRICTED"]);
 const mediaTypes = new Set<SourceMediaType>(["application/json", "text/markdown", "text/plain"]);
 
 function isRecord(value: unknown): value is UnknownRecord {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
+  }
+  const prototype = Object.getPrototypeOf(value) as unknown;
+  return prototype === Object.prototype || prototype === null;
 }
 
 function hasOwn(value: UnknownRecord, key: string): boolean {
@@ -69,7 +77,7 @@ function requiredString(
   path: string,
 ): string | undefined {
   const candidate = value[key];
-  if (typeof candidate !== "string" || candidate.length === 0) {
+  if (!hasOwn(value, key) || typeof candidate !== "string" || candidate.length === 0) {
     addDiagnostic(diagnostics, code, `${path}.${key}`, "A non-empty string is required.");
     return undefined;
   }
@@ -97,7 +105,7 @@ function requiredBoolean(
   path: string,
 ): boolean | undefined {
   const candidate = value[key];
-  if (typeof candidate !== "boolean") {
+  if (!hasOwn(value, key) || typeof candidate !== "boolean") {
     addDiagnostic(diagnostics, code, `${path}.${key}`, "A boolean is required.");
     return undefined;
   }
@@ -112,7 +120,7 @@ function requiredArray(
   path: string,
 ): unknown[] | undefined {
   const candidate = value[key];
-  if (!Array.isArray(candidate)) {
+  if (!hasOwn(value, key) || !Array.isArray(candidate)) {
     addDiagnostic(diagnostics, code, `${path}.${key}`, "An array is required.");
     return undefined;
   }
@@ -374,20 +382,44 @@ function validateClaim(value: unknown, path: string, diagnostics: Diagnostic[]):
   requiredString(claim, "id", diagnostics, "CLAIM_ID_REQUIRED", path);
   requiredString(claim, "title", diagnostics, "CLAIM_TITLE_REQUIRED", path);
   requiredString(claim, "publicTitle", diagnostics, "CLAIM_PUBLIC_TITLE_REQUIRED", path);
-  enumValue(claim, "kind", claimKinds, diagnostics, "CLAIM_KIND_REQUIRED", "CLAIM_KIND_UNKNOWN", path);
+  const kind = enumValue(
+    claim,
+    "kind",
+    claimKinds,
+    diagnostics,
+    "CLAIM_KIND_REQUIRED",
+    "CLAIM_KIND_UNKNOWN",
+    path,
+  );
   requiredBoolean(claim, "critical", diagnostics, "CLAIM_CRITICAL_REQUIRED", path);
   const anchors = requiredArray(claim, "anchors", diagnostics, "CLAIM_ANCHORS_REQUIRED", path);
   anchors?.forEach((anchor, index) => validateAnchor(anchor, `${path}.anchors[${index}]`, diagnostics));
   if (hasOwn(claim, "requiresVerified")) {
     validateStringArray(claim.requiresVerified, `${path}.requiresVerified`, diagnostics);
+    if (kind !== undefined && kind !== "inference" && kind !== "gate") {
+      addDiagnostic(
+        diagnostics,
+        "CLAIM_DEPENDENCIES_KIND_INVALID",
+        `${path}.requiresVerified`,
+        "Only inference and gate claims may declare verified dependencies.",
+      );
+    }
   }
-  optionalString(
+  const authorityResolverAnchorId = optionalString(
     claim,
     "authorityResolverAnchorId",
     diagnostics,
     "CLAIM_AUTHORITY_RESOLVER_INVALID",
     path,
   );
+  if (authorityResolverAnchorId !== undefined && kind !== undefined && kind !== "exclusive") {
+    addDiagnostic(
+      diagnostics,
+      "CLAIM_AUTHORITY_RESOLVER_KIND_INVALID",
+      `${path}.authorityResolverAnchorId`,
+      "Only exclusive claims may declare an authority resolver.",
+    );
+  }
   requiredString(claim, "nextAction", diagnostics, "CLAIM_NEXT_ACTION_REQUIRED", path);
   optionalString(claim, "stopCondition", diagnostics, "CLAIM_STOP_CONDITION_INVALID", path);
   requiredBoolean(
@@ -469,21 +501,27 @@ function validateRuleSet(value: unknown, diagnostics: Diagnostic[]): UnknownReco
   return rules;
 }
 
-function collectObjects(value: unknown): UnknownRecord[] {
+function collectObjects(value: unknown): IndexedRecord[] {
   if (!Array.isArray(value)) {
     return [];
   }
-  return value.filter(isRecord);
+  const records: IndexedRecord[] = [];
+  value.forEach((item, index) => {
+    if (isRecord(item)) {
+      records.push({ value: item, index });
+    }
+  });
+  return records;
 }
 
 function reportDuplicateIds(
-  values: UnknownRecord[],
+  values: IndexedRecord[],
   path: string,
   code: string,
   diagnostics: Diagnostic[],
 ): void {
   const seen = new Set<string>();
-  values.forEach((value, index) => {
+  values.forEach(({ value, index }) => {
     if (typeof value.id !== "string") {
       return;
     }
@@ -498,7 +536,7 @@ function reportDuplicateIds(
 function validateReferences(
   manifest: UnknownRecord | undefined,
   rules: UnknownRecord | undefined,
-  sourceValues: UnknownRecord[],
+  sourceValues: IndexedRecord[],
   diagnostics: Diagnostic[],
 ): void {
   const declarations = collectObjects(manifest?.sources);
@@ -507,25 +545,27 @@ function validateReferences(
   reportDuplicateIds(sourceValues, "$.sources", "SOURCE_DUPLICATE_ID", diagnostics);
   reportDuplicateIds(claims, "$.rules.claims", "CLAIM_DUPLICATE_ID", diagnostics);
 
-  const declaredById = new Map<string, UnknownRecord>();
+  const declaredById = new Map<string, IndexedRecord>();
   for (const declaration of declarations) {
-    if (typeof declaration.id === "string" && !declaredById.has(declaration.id)) {
-      declaredById.set(declaration.id, declaration);
+    const value = declaration.value;
+    if (typeof value.id === "string" && !declaredById.has(value.id)) {
+      declaredById.set(value.id, declaration);
     }
   }
-  const sourceById = new Map<string, UnknownRecord>();
+  const sourceById = new Map<string, IndexedRecord>();
   for (const source of sourceValues) {
-    if (typeof source.id === "string" && !sourceById.has(source.id)) {
-      sourceById.set(source.id, source);
+    const value = source.value;
+    if (typeof value.id === "string" && !sourceById.has(value.id)) {
+      sourceById.set(value.id, source);
     }
   }
 
-  sourceValues.forEach((source, index) => {
+  sourceValues.forEach(({ value: source, index }) => {
     if (typeof source.id !== "string") {
       return;
     }
-    const declaration = declaredById.get(source.id);
-    if (declaration === undefined) {
+    const declarationEntry = declaredById.get(source.id);
+    if (declarationEntry === undefined) {
       addDiagnostic(
         diagnostics,
         "SOURCE_UNDECLARED",
@@ -534,6 +574,7 @@ function validateReferences(
       );
       return;
     }
+    const declaration = declarationEntry.value;
     for (const field of ["file", "mediaType", "capturedAt", "safety"] as const) {
       if (source[field] !== declaration[field]) {
         addDiagnostic(
@@ -545,7 +586,7 @@ function validateReferences(
       }
     }
   });
-  declarations.forEach((declaration, index) => {
+  declarations.forEach(({ value: declaration, index }) => {
     if (typeof declaration.id === "string" && !sourceById.has(declaration.id)) {
       addDiagnostic(
         diagnostics,
@@ -556,11 +597,11 @@ function validateReferences(
     }
   });
 
-  const claimIds = new Set(claims.flatMap((claim) => typeof claim.id === "string" ? [claim.id] : []));
+  const claimIds = new Set(claims.flatMap(({ value: claim }) => typeof claim.id === "string" ? [claim.id] : []));
   const allAnchorIds = new Set<string>();
-  claims.forEach((claim, claimIndex) => {
+  claims.forEach(({ value: claim, index: claimIndex }) => {
     const anchors = collectObjects(claim.anchors);
-    anchors.forEach((anchor, anchorIndex) => {
+    anchors.forEach(({ value: anchor, index: anchorIndex }) => {
       if (typeof anchor.id === "string") {
         if (allAnchorIds.has(anchor.id)) {
           addDiagnostic(
@@ -582,7 +623,7 @@ function validateReferences(
       } else if (
         typeof anchor.sourceId === "string"
         && anchor.safety === "PUBLIC"
-        && sourceById.get(anchor.sourceId)?.safety === "RESTRICTED"
+        && sourceById.get(anchor.sourceId)?.value.safety === "RESTRICTED"
       ) {
         addDiagnostic(
           diagnostics,
@@ -606,8 +647,9 @@ function validateReferences(
     });
 
     if (typeof claim.authorityResolverAnchorId === "string") {
-      const localAnchorIds = new Set(anchors.flatMap((anchor) => typeof anchor.id === "string" ? [anchor.id] : []));
-      if (!localAnchorIds.has(claim.authorityResolverAnchorId)) {
+      const localAnchorIds = new Set(anchors.flatMap(({ value: anchor }) =>
+        typeof anchor.id === "string" ? [anchor.id] : []));
+      if (claim.kind === "exclusive" && !localAnchorIds.has(claim.authorityResolverAnchorId)) {
         addDiagnostic(
           diagnostics,
           "AUTHORITY_RESOLVER_MISSING",
@@ -621,9 +663,9 @@ function validateReferences(
   validateDependencyCycles(claims, diagnostics);
 }
 
-function validateDependencyCycles(claims: UnknownRecord[], diagnostics: Diagnostic[]): void {
+function validateDependencyCycles(claims: IndexedRecord[], diagnostics: Diagnostic[]): void {
   const byId = new Map<string, { claim: UnknownRecord; index: number }>();
-  claims.forEach((claim, index) => {
+  claims.forEach(({ value: claim, index }) => {
     if (typeof claim.id === "string" && !byId.has(claim.id)) {
       byId.set(claim.id, { claim, index });
     }
@@ -682,11 +724,11 @@ export function validateCompileInput(input: unknown): ValidationResult {
   const manifest = validateManifest(packet.manifest, diagnostics);
   const rules = validateRuleSet(packet.rules, diagnostics);
   const sources = requiredArray(packet, "sources", diagnostics, "PACKET_SOURCES_REQUIRED", "$");
-  const sourceValues: UnknownRecord[] = [];
+  const sourceValues: IndexedRecord[] = [];
   sources?.forEach((source, index) => {
     const validated = validateSource(source, `$.sources[${index}]`, diagnostics, true);
     if (validated !== undefined) {
-      sourceValues.push(validated);
+      sourceValues.push({ value: validated, index });
     }
   });
   validateReferences(manifest, rules, sourceValues, diagnostics);
