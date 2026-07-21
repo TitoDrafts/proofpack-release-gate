@@ -161,7 +161,7 @@ ProofPack does not make an autonomous fabrication decision. It computes a declar
 - The allowlisted export relies on explicit `PUBLIC`/`RESTRICTED` labels and declared lineage; it is not automatic redaction, anonymity, or PII detection.
 - The receipt is reproducibility evidence, not source authenticity or tamper-proof provenance.
 - Browser clipboard and downloads depend on browser permissions and still need the final hands-on recording pass noted above.
-- The public hosted demo is live; no public repository URL, YouTube URL, `/feedback` Session ID, or submission confirmation is claimed in this repository yet.
+- The public hosted demo and repository are live; no public YouTube URL, `/feedback` Session ID, or submission confirmation is claimed in this repository yet.
 
 ## Required `/feedback` step
 
