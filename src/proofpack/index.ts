@@ -28,3 +28,4 @@ export {
   ShareableExportError,
 } from "./safety.ts";
 export { validateCompileInput } from "./validate.ts";
+export * from "./proposal.ts";

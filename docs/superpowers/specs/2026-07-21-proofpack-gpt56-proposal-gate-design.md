@@ -61,7 +61,7 @@ GPT-5.6 proposes three candidate bindings:
 2. `traveler-finish-cut-state`: exact email lines for PL-18 and `cut_started=false`.
 3. `sample-approval`: the estimator's informal sample statement.
 
-The deterministic proposal review admits the two predeclared traveler slots and rejects `sample-approval` because sample authority remains exclusively owned by `sample-register.json`. When the human applies both admissible bindings, ProofPack materializes one fixed `traveler_ack` log event. Recompilation changes exactly `finish-coordinated` and `rfi-incorporated`; the independent pending sample keeps `fabrication-release` `BLOCKED` and the handoff on `HOLD`.
+The deterministic proposal review admits the two predeclared traveler slots and rejects `sample-approval` because sample authority remains exclusively owned by `sample-register.json`. When the human applies both admissible bindings, ProofPack materializes one `traveler_ack` log event with four fixed resolver fields plus deterministic origin, review-digest, source, and source-line lineage metadata. Recompilation changes exactly `finish-coordinated` and `rfi-incorporated`; the independent pending sample keeps `fabrication-release` `BLOCKED` and the handoff on `HOLD`.
 
 ## Proposal Contract
 
@@ -89,7 +89,7 @@ The pure review function receives the current compile input and a proposal envel
 4. Resolve each line selector to exactly one source line.
 5. Compare the candidate's slot, source, selectors, and values with a closed in-code allowlist.
 6. Return a review artifact containing `ADMISSIBLE` or `REJECTED` per candidate and stable reason codes.
-7. Materialize the fixed traveler event only when both required traveler slots are admissible.
+7. Materialize the traveler event's fixed resolver fields plus deterministic lineage metadata only when both required traveler slots are admissible.
 
 The review must not mutate its inputs. Unknown slots are rejected. Missing or ambiguous selectors are rejected. A stale packet or ruleset rejects the entire proposal. A rationale is displayed as untrusted and never used in a decision.
 
@@ -126,7 +126,7 @@ Add a full-width proposal-gate strip above the existing three-panel cockpit:
 
 - **AI proposal:** recorded `gpt-5.6-sol` artifact and packet binding.
 - **Deterministic review:** candidate cards with exact anchors, `ADMISSIBLE`/`REJECTED`, and stable reason codes.
-- **Human application:** a button that applies only the materialized fixed event; the UI states that no model-generated status enters the ledger.
+- **Human application:** a button that applies only the fixed traveler resolver fields with deterministic lineage metadata; the UI states that no model-generated status enters the ledger.
 
 Initial state offers **Review GPT-5.6 proposal**. Reviewing changes no claim or handoff. After review, **Apply 2 admissible bindings** becomes available. Reset restores the original packet, clears the proposal review, and restores the baseline fingerprint.
 
@@ -151,7 +151,7 @@ Use test-first development for every behavior.
 - Exact selectors must resolve once; missing and ambiguous anchors reject.
 - The two declared traveler slots are admissible only with exact source/selectors/values.
 - The sample-approval proposal is rejected as unauthorized.
-- Applying a reviewed proposal materializes exactly one fixed log event, changes exactly two claims, and leaves fabrication `BLOCKED`/handoff `HOLD`.
+- Applying or reapplying a reviewed proposal preserves exactly one log event containing the fixed resolver fields plus deterministic lineage metadata, changes exactly two claims, and leaves fabrication `BLOCKED`/handoff `HOLD`; a bare legacy resolver line fails closed.
 - Reviewing alone never changes compile input or ledger digests.
 - The active-command adapter strips API-key variables, uses explicit Sol/read-only/ephemeral/schema arguments, and refuses non-ChatGPT auth or model fallback.
 - Default `npm run verify`, web compilation, and replay perform no network or Codex invocation.

@@ -2,6 +2,7 @@ import fieldCheckText from "../../fixtures/project-alder/field-check.json?raw";
 import finishScheduleText from "../../fixtures/project-alder/finish-schedule.md?raw";
 import handoffDraftText from "../../fixtures/project-alder/handoff-draft.md?raw";
 import incomingReceiptsText from "../../fixtures/project-alder/incoming-receipts.log?raw";
+import operatorEmailText from "../../fixtures/project-alder/operator-email.md?raw";
 import packetText from "../../fixtures/project-alder/packet.json?raw";
 import rfi042Text from "../../fixtures/project-alder/rfi-042.json?raw";
 import rulesText from "../../fixtures/project-alder/release-rules.json?raw";
@@ -21,6 +22,7 @@ const RAW_SOURCE_BY_FILE = new Map<string, string>([
   ["shop-notes.log", shopNotesText],
   ["field-check.json", fieldCheckText],
   ["sample-register.json", sampleRegisterText],
+  ["operator-email.md", operatorEmailText],
   ["incoming-receipts.log", incomingReceiptsText],
 ]);
 

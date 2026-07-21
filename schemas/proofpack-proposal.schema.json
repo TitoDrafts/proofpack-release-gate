@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://proofpack.example/schemas/proofpack-proposal.schema.json",
+  "title": "ProofPack Proposal v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "target", "candidates"],
+  "properties": {
+    "schemaVersion": {
+      "const": "proofpack.proposal/v1"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["packetId", "packetFingerprint", "rulesetId", "rulesetVersion"],
+      "properties": {
+        "packetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "packetFingerprint": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "rulesetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "rulesetVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        }
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "slotId", "sourceId", "exactLines", "values", "rationale"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "slotId": {
+            "type": "string",
+            "enum": [
+              "traveler-rfi-revision",
+              "traveler-finish-cut-state",
+              "sample-approval"
+            ]
+          },
+          "sourceId": {
+            "const": "operator-email"
+          },
+          "exactLines": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            }
+          },
+          "values": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["key", "value"],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "enum": ["rfi", "rev", "finish", "cut_started", "sample_status"]
+                },
+                "value": {
+                  "type": ["string", "boolean"],
+                  "maxLength": 80
+                }
+              }
+            }
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        }
+      }
+    }
+  }
+}

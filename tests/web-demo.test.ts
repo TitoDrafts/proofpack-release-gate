@@ -34,6 +34,13 @@ test("web demo raw bundle compiles baseline, replay, and exact reset", async (co
   assert.notEqual(first.sources[0]!.content, second.sources[0]!.content);
 
   const baselineInput = demoModule.createDemoInput();
+  const operatorEmail = baselineInput.sources.find(({ id }) => id === "operator-email");
+  assert.ok(operatorEmail);
+  assert.equal(operatorEmail.file, "operator-email.md");
+  assert.equal(operatorEmail.mediaType, "text/markdown");
+  assert.equal(operatorEmail.safety, "RESTRICTED");
+  assert.match(operatorEmail.content, /^# Synthetic Operator Email$/mu);
+  assert.match(operatorEmail.content, /^Estimator note: the PL-18 sample looks approved\.$/mu);
   const baseline = await compileProofPack(baselineInput);
   assert.deepEqual(baseline.claims.map(({ id, status }) => ({ id, status })), [
     { id: "fabrication-release", status: "BLOCKED" },

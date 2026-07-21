@@ -49,6 +49,13 @@
       "safety": "RESTRICTED"
     },
     {
+      "id": "operator-email",
+      "file": "operator-email.md",
+      "mediaType": "text/markdown",
+      "capturedAt": "2026-07-21T03:50:00.000Z",
+      "safety": "RESTRICTED"
+    },
+    {
       "id": "incoming-receipts",
       "file": "incoming-receipts.log",
       "mediaType": "text/plain",
