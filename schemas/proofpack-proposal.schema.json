@@ -7,6 +7,7 @@
   "required": ["schemaVersion", "target", "candidates"],
   "properties": {
     "schemaVersion": {
+      "type": "string",
       "const": "proofpack.proposal/v1"
     },
     "target": {
@@ -58,13 +59,13 @@
             ]
           },
           "sourceId": {
+            "type": "string",
             "const": "operator-email"
           },
           "exactLines": {
             "type": "array",
             "minItems": 1,
             "maxItems": 2,
-            "uniqueItems": true,
             "items": {
               "type": "string",
               "minLength": 1,
@@ -85,8 +86,15 @@
                   "enum": ["rfi", "rev", "finish", "cut_started", "sample_status"]
                 },
                 "value": {
-                  "type": ["string", "boolean"],
-                  "maxLength": 80
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    {
+                      "type": "boolean"
+                    }
+                  ]
                 }
               }
             }

@@ -3,9 +3,10 @@ import type {
   CompileInput,
   Observation,
 } from "../src/proofpack/types.ts";
-
-export const SYNTHETIC_RECEIPT_LINE =
-  "traveler_ack rfi=RFI-042 rev=C finish=PL-18 cut_started=false";
+import {
+  PROPOSAL_TRAVELER_ACK_PREFIX,
+  type ProposalReview,
+} from "../src/proofpack/proposal.ts";
 
 export type HumanDecisionKind = "HOLD" | "EXCEPTION";
 
@@ -19,24 +20,27 @@ export type HumanDecisionResult =
   | { ok: true; record: HumanDecisionRecord }
   | { ok: false; message: string };
 
-export function appendSyntheticReceipt(input: CompileInput): CompileInput {
-  const receiptSource = input.sources.find(({ id }) => id === "incoming-receipts");
-  if (receiptSource === undefined) {
-    throw new Error("DEMO_INCOMING_RECEIPTS_MISSING");
-  }
-  const existingLines = receiptSource.content.replaceAll("\r\n", "\n").split("\n");
-  if (existingLines.includes(SYNTHETIC_RECEIPT_LINE)) {
-    return input;
-  }
-  const separator = receiptSource.content.length === 0 || receiptSource.content.endsWith("\n")
-    ? ""
-    : "\n";
-  const content = `${receiptSource.content}${separator}${SYNTHETIC_RECEIPT_LINE}\n`;
+export function proposalDecisionCounts(review: ProposalReview | null): {
+  admissible: number;
+  rejected: number;
+} {
+  const decisions = review?.candidates.map(({ decision }) => decision) ?? [];
   return {
-    ...input,
-    sources: input.sources.map((source) =>
-      source.id === receiptSource.id ? { ...source, content } : source),
+    admissible: decisions.filter((decision) => decision === "ADMISSIBLE").length,
+    rejected: decisions.filter((decision) => decision === "REJECTED").length,
   };
+}
+
+export function proposalCanApply(review: ProposalReview | null): boolean {
+  return review?.status === "REVIEWED" && review.materializable;
+}
+
+export function hasProposalMaterialization(input: CompileInput): boolean {
+  return input.sources
+    .find(({ id }) => id === "incoming-receipts")
+    ?.content.replaceAll("\r\n", "\n")
+    .split("\n")
+    .some((line) => line.startsWith(`${PROPOSAL_TRAVELER_ACK_PREFIX} origin=proposal_gate `)) ?? false;
 }
 
 export function buildHumanDecision(

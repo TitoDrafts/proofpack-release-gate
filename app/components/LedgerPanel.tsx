@@ -57,11 +57,11 @@ function ClaimRow({ claim, selected, changed, transition, onSelectClaim }: Claim
 
 interface EvidenceCardProps {
   observation: Observation;
-  addedByReplay: boolean;
+  addedByProposal: boolean;
   onInspectEvidence: (sourceId: string) => void;
 }
 
-function EvidenceCard({ observation, addedByReplay, onInspectEvidence }: EvidenceCardProps) {
+function EvidenceCard({ observation, addedByProposal, onInspectEvidence }: EvidenceCardProps) {
   return (
     <li>
       <button
@@ -73,7 +73,7 @@ function EvidenceCard({ observation, addedByReplay, onInspectEvidence }: Evidenc
           <strong>{observation.sourceFile}</strong>
           <code>{observation.locator}</code>
         </span>
-        {addedByReplay ? <span className="changed-marker">Added by replay</span> : null}
+        {addedByProposal ? <span className="changed-marker">Added by proposal</span> : null}
         <code className="evidence-excerpt">{observation.excerpt}</code>
         <span className="evidence-tags">
           <span>{observation.strength}</span>
@@ -156,7 +156,7 @@ export function LedgerPanel({
           {diff === null ? null : (
             <aside className="diff-strip" aria-labelledby="causal-diff-heading">
               <div>
-                <span className="micro-label" id="causal-diff-heading">Causal replay diff</span>
+                <span className="micro-label" id="causal-diff-heading">Causal application diff</span>
                 <strong>{diff.changedClaimIds.length} claims changed</strong>
               </div>
               <p>
@@ -253,7 +253,7 @@ export function LedgerPanel({
                 <ul className="evidence-list">
                   {selectedEvidence.map((observation) => (
                     <EvidenceCard
-                      addedByReplay={addedObservationIds.has(observation.id)}
+                      addedByProposal={addedObservationIds.has(observation.id)}
                       key={observation.id}
                       observation={observation}
                       onInspectEvidence={onInspectEvidence}

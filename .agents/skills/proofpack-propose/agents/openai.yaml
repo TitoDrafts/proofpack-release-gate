@@ -1,0 +1,7 @@
+interface:
+  display_name: "ProofPack Propose"
+  short_description: "Propose bounded synthetic evidence bindings"
+  default_prompt: "Use $proofpack-propose to propose exact synthetic evidence bindings for deterministic ProofPack review."
+
+policy:
+  allow_implicit_invocation: false

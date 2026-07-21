@@ -463,7 +463,12 @@ test("ships a closed JSON Schema that cannot express compiler authority fields",
       candidates: { items: { properties: { values: { items: { properties: { value: Record<string, unknown> } } } } } };
     };
   };
-  assert.equal(valueSchema.properties.candidates.items.properties.values.items.properties.value.maxLength, 80);
+  assert.deepEqual(valueSchema.properties.candidates.items.properties.values.items.properties.value, {
+    anyOf: [
+      { type: "string", maxLength: 80 },
+      { type: "boolean" },
+    ],
+  });
   assert.deepEqual([...propertyNames].sort(), [
     "candidates",
     "exactLines",

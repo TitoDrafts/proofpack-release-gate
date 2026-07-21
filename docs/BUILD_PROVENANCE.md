@@ -2,7 +2,7 @@
 
 This record describes how GPT-5.6 Sol, Codex, independent review agents, and the entrant contributed to ProofPack during the 2026-07-21 build. It is limited to artifacts visible in the primary build thread, Git history, task reports, source, and fresh verification output.
 
-GPT-5.6 Sol and Codex are build-time collaborators, not runtime dependencies. The shipped compiler makes no model call and requires no API credential.
+GPT-5.6 Sol and Codex are build-time collaborators. GPT-5.6 Sol also powers one optional, bounded proposal command through the pinned Codex CLI. The shipped compiler and web default make no model call and require no API credential; model output never determines a claim status or release decision.
 
 Devpost displayed `Project submitted!` for [ProofPack Release Gate](https://devpost.com/software/proofpack-release-gate) on 2026-07-21, and the public page showed `Submitted to OpenAI Build Week`.
 
@@ -29,6 +29,9 @@ All listed commits are dated 2026-07-21 in the repository.
 | Task 5 release | Codex directed one synthetic editorial social-card generation, inspected its exact text, resized it to 1200 × 630, bound production metadata, and published the verified build through Sites. | `26f7c7f`, `55287a6` |
 | Final adversarial hardening | A pinned independent release review found public-projection, dependency-gate, and malformed UTF-8 boundaries. Codex reproduced each with a failing regression, implemented the bounded fixes, and ran the complete release gate. | `e80810b` |
 | Release-gate safety follow-up | A second pinned probe proved that non-pending sample states could clear the fabrication gate. Codex added explicit `APPROVED` support, explicit `REJECTED` blocking, missing-evidence hold coverage, and new packet/rules/engine identities before re-running the release gate. | `8ff67bc` |
+| GPT-5.6 Proposal Gate design | Independent Sol reviews compared eligibility risk, judge clarity, technical scope, and authority boundaries. Codex committed a closed design and TDD plan for an optional proposal workflow. | `934606c` |
+| Deterministic proposal core | Failing tests drove strict proposal validation, packet/ruleset binding, exact unique line anchors, a two-slot allowlist, unauthorized sample rejection, receipt-bound source-line lineage, and idempotent materialization. Two independent re-reviews passed after finding and closing hidden-field, schema, provenance, and duplicate-event gaps. | `dcd6e65` |
+| Active Sol workflow and product gate | A real explicit `gpt-5.6-sol` Codex run produced three synthetic candidate bindings. ProofPack admitted two and rejected the estimator's sample claim as `UNAUTHORIZED_AUTHORITY`; the checked-in artifact is sanitized and non-authoritative. The web UI exposes review, human application, causal diff, and reset without a direct replay bypass. | final release commit |
 
 ## Material GPT-5.6 Sol specialist contributions
 
@@ -38,7 +41,7 @@ Three focused specialist passes in the primary build thread materially influence
 - **Product and demo:** shaped the single-screen source → ledger → handoff triptych, the synthetic PL-17/PL-18 conflict, and the bounded append/reset proof moment.
 - **Technical red team:** sharpened exact status meanings, validation failure behavior, canonical receipts, public-safety lineage, no-network verification, and the limits of `VERIFIED` and receipt claims.
 
-These were advisory design and review contributions. They did not make runtime release decisions, supply client material, or replace entrant approval.
+These design passes were advisory. Separately, the optional active Sol command proposes schema-bound candidate bindings from the synthetic operator email. Neither mode makes release decisions, supplies client material, or replaces entrant approval.
 
 ## Material Codex contributions by task
 
@@ -59,6 +62,7 @@ The entrant retained and approved:
 - the commercial-millwork problem, terminology, and release consequences;
 - the fictional-only fixture and no-client-data boundary;
 - the choice to keep runtime compilation local, deterministic, and model-free;
+- the choice to let optional model output propose only bounded evidence bindings while deterministic code owns authority, status, and release semantics;
 - the exact five claim statuses and the separate `READY`/`HOLD` operational decision;
 - the rule that a human acknowledgement or exception request cannot alter evidence classifications or clear a blocker;
 - the final product positioning, scope exclusions, demo story, and approval of the documented build artifact.
@@ -75,13 +79,15 @@ The local task reports record these observed transitions:
 | Task 2 | Four focused tests failed against the absent compiler API. | The compiler suite reached 41 focused passing tests; the formal fix pass ended with 88 cumulative TypeScript tests passing. |
 | Task 3 | Safety, receipt, replay, and CLI tests first failed because those APIs and scripts did not exist. | The final formal follow-up reported 126 TypeScript, 21 privacy-scanner, and 2 rendered-shell tests passing, plus a successful build, demo, and privacy scan. |
 | Task 4 | The rendered product contract first passed 0 of 2 tests against the starter shell; UI-model tests failed on their intentionally absent module/exports. | The final Task 4 gate reported 132 TypeScript, 21 privacy-scanner, and 2 rendered-product tests passing, with build, demo, and privacy scan successful. |
+| Proposal core | Thirteen focused tests first failed against an absent proposal module and later reproduced hidden-field, schema, provenance, and idempotence review findings. | The focused proposal suite passed 13/13; requirements and quality re-reviews passed. |
+| Active Sol command and UI | Command tests first failed against an absent adapter; the first live run exposed two structured-output schema incompatibilities and a missing bounded sample vocabulary. UI tests first failed against the direct replay path. | A real Sol run completed with 2 `ADMISSIBLE`, 1 `REJECTED / UNAUTHORIZED_AUTHORITY`, and zero pre-application ledger changes. The combined gate passed 163 TypeScript tests, 21 privacy tests, and 3 rendered tests. |
 
 ## Fresh final release verification
 
 On 2026-07-21, after the documentation changes:
 
 - `npm run verify` exited `0`.
-- 140 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests passed.
+- 163 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests passed.
 - lint, typecheck, the production build, CLI demo, and final privacy scan completed successfully.
 - the CLI demo emitted `HOLD` and all five expected statuses.
 - `git diff --check` exited `0` before commit.

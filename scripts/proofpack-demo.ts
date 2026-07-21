@@ -199,7 +199,7 @@ async function readJson(path: string): Promise<unknown> {
   }
 }
 
-async function hydrateCompileInput(packetArgument: string): Promise<{
+export async function hydrateCompileInput(packetArgument: string): Promise<{
   input: CompileInput;
   packetDirectory: string;
 }> {

@@ -1,28 +1,41 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
-  appendSyntheticReceipt,
   buildHumanDecision,
   formatStatusTransition,
+  hasProposalMaterialization,
+  proposalCanApply,
+  proposalDecisionCounts,
   resolveDiffObservations,
-  SYNTHETIC_RECEIPT_LINE,
 } from "../app/release-gate-model.ts";
-import { compileProofPack, diffCompiledPacks } from "../src/proofpack/index.ts";
+import {
+  compileProofPack,
+  diffCompiledPacks,
+  materializeProposal,
+  PROPOSAL_TRAVELER_ACK_PREFIX,
+  reviewProposal,
+} from "../src/proofpack/index.ts";
 import { loadProjectAlder } from "./proofpack-fixtures.ts";
 
-test("replay immutably appends exactly one approved receipt line", async () => {
+async function recordedProposal(): Promise<unknown> {
+  return JSON.parse(await readFile(
+    new URL("../fixtures/project-alder/recorded-proposal.json", import.meta.url),
+    "utf8",
+  )) as unknown;
+}
+
+test("recorded proposal review is pure and exposes exactly two applicable bindings", async () => {
   const input = await loadProjectAlder();
-  const originalSource = input.sources.find(({ id }) => id === "incoming-receipts");
-  assert.equal(originalSource?.content, "");
+  const before = structuredClone(input);
+  const proposal = await recordedProposal();
 
-  const replay = appendSyntheticReceipt(input);
-  const replaySource = replay.sources.find(({ id }) => id === "incoming-receipts");
-  assert.equal(replaySource?.content, `${SYNTHETIC_RECEIPT_LINE}\n`);
-  assert.equal(originalSource?.content, "");
+  const review = await reviewProposal(input, proposal);
 
-  const repeated = appendSyntheticReceipt(replay);
-  const repeatedSource = repeated.sources.find(({ id }) => id === "incoming-receipts");
-  assert.equal(repeatedSource?.content, `${SYNTHETIC_RECEIPT_LINE}\n`);
+  assert.deepEqual(input, before);
+  assert.deepEqual(proposalDecisionCounts(review), { admissible: 2, rejected: 1 });
+  assert.equal(proposalCanApply(review), true);
+  assert.equal(proposalCanApply(await reviewProposal(input, {})), false);
 });
 
 test("human HOLD acknowledgement does not require exception reasoning", () => {
@@ -47,7 +60,7 @@ test("human exception requires and preserves a visible reason", () => {
   });
 });
 
-test("status transitions are only labeled when replay changes a claim", () => {
+test("status transitions are only labeled when proposal application changes a claim", () => {
   assert.equal(formatStatusTransition("CONFLICTED", "VERIFIED"), "CONFLICTED → VERIFIED");
   assert.equal(formatStatusTransition("BLOCKED", "BLOCKED"), null);
   assert.equal(formatStatusTransition(undefined, "VERIFIED"), null);
@@ -56,13 +69,27 @@ test("status transitions are only labeled when replay changes a claim", () => {
 test("causal diff observation ids resolve to exact inspectable anchors", async () => {
   const input = await loadProjectAlder();
   const baseline = await compileProofPack(input);
-  const replay = await compileProofPack(appendSyntheticReceipt(input));
+  const materialized = await materializeProposal(input, await recordedProposal());
+  const replay = await compileProofPack(materialized);
   const diff = diffCompiledPacks(baseline, replay);
 
   const added = resolveDiffObservations(diff.addedObservationIds, replay.observations);
   assert.equal(added.length, 2);
   assert.equal(added.every(({ sourceId }) => sourceId === "incoming-receipts"), true);
   assert.equal(added.every(({ locator }) => locator === "event:traveler_ack@line:1"), true);
-  assert.equal(added.every(({ excerpt }) => excerpt === SYNTHETIC_RECEIPT_LINE), true);
+  assert.equal(added.every(({ excerpt }) => excerpt.startsWith(`${PROPOSAL_TRAVELER_ACK_PREFIX} `)), true);
+  assert.equal(added.every(({ excerpt }) => excerpt.includes("origin=proposal_gate")), true);
   assert.deepEqual(resolveDiffObservations(["not-present"], replay.observations), []);
+});
+
+test("reset input clears proposal materialization and restores the baseline receipt", async () => {
+  const baselineInput = await loadProjectAlder();
+  const baseline = await compileProofPack(baselineInput);
+  const appliedInput = await materializeProposal(baselineInput, await recordedProposal());
+  assert.equal(hasProposalMaterialization(appliedInput), true);
+
+  const resetInput = await loadProjectAlder();
+  const reset = await compileProofPack(resetInput);
+  assert.equal(hasProposalMaterialization(resetInput), false);
+  assert.deepEqual(reset.receipt, baseline.receipt);
 });

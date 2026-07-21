@@ -10,6 +10,7 @@ const appSources = [
   "app/layout.tsx",
   "app/globals.css",
   "app/ProofPackApp.tsx",
+  "app/components/ProposalGate.tsx",
   "app/components/SourcePanel.tsx",
   "app/components/LedgerPanel.tsx",
   "app/components/HandoffPanel.tsx",
@@ -78,6 +79,13 @@ test("server-renders the complete ProofPack product frame before client compilat
   assert.match(html, /<main\b/i);
   assert.match(html, /ProofPack Release Gate/);
   assert.match(html, /No source, no claim\. No evidence, no release\./);
+  assert.match(html, /GPT-5\.6 proposes\. ProofPack proves/);
+  assert.match(html, /Review GPT-5\.6 proposal/);
+  assert.match(html, /Deterministic review/);
+  assert.match(html, /ADMISSIBLE/);
+  assert.match(html, /REJECTED/);
+  assert.match(html, /UNAUTHORIZED_AUTHORITY/);
+  assert.match(html, /model output cannot set readiness/i);
   assert.match(html, /<h2[^>]*>\s*Release packet\s*<\/h2>/i);
   assert.match(html, /<h2[^>]*>\s*Evidence ledger\s*<\/h2>/i);
   assert.match(html, /<h2[^>]*>\s*Fabrication handoff\s*<\/h2>/i);
@@ -111,6 +119,7 @@ test("ships no starter package, remote service, font, analytics, or image asset"
   const renderedSourceAndAssets = `${await response.text()}\n${sources.join("\n")}\n${builtText}`;
 
   assert.doesNotMatch(renderedSourceAndAssets, forbiddenProductText);
+  assert.doesNotMatch(sources.join("\n"), /Append synthetic Rev C receipt|Added by replay|Causal replay diff/i);
   assert.doesNotMatch(sources.join("\n"), /\bfetch\s*\(|["']use server["']|\/api\//i);
   for (const domain of forbiddenDomains) {
     assert.doesNotMatch(renderedSourceAndAssets, new RegExp(domain.replaceAll(".", "\\."), "i"));

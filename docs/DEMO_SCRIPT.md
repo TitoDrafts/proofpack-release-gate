@@ -1,33 +1,35 @@
-# ProofPack alternate 2:55 hands-on judge script
+# ProofPack 2:54 judge demo
 
 ## Recording setup — not on the clock
 
-1. Run a fresh `npm run verify` in the first terminal and leave its final successful output visible for the verification beat.
-2. After verification finishes, run `npm run dev` in a second terminal; open the exact local URL printed by the server.
-3. Reload the page and wait for the live status to say the baseline compiled. Confirm the fingerprint is `9d8a5168a625` and no human decision is recorded.
-4. Use only the bundled fictional Project Alder packet. Do not open personal files, notifications, browser history, or any real project material while recording.
-5. Record at a readable desktop width. Keep the pointer still except for the actions below.
+1. Run a real `npm run ai:propose` using the saved ChatGPT login. Record the explicit `gpt-5.6-sol`, read-only, ephemeral, closed-schema invocation and sanitized result. Do not show raw JSONL, auth files, notifications, or personal paths.
+2. Run a fresh `npm run verify` and leave the successful summary visible.
+3. Run `npm run dev`, reload the page, wait for baseline compilation, and confirm fingerprint `5e1bb8bc75f1`.
+4. Use only the bundled fictional Project Alder packet.
 
 ## Timed script
 
 | Time | Exact screen action | Voiceover |
 | --- | --- | --- |
-| `0:00–0:18` | Start on the full product view. Point to **HOLD**, the short packet fingerprint, and the five status rows. | “This package says it is ready for fabrication, but one file calls for natural oak, a later approved RFI calls for smoked walnut, and the finish sample is still pending. ProofPack stops this fictional release before a cut ticket is issued.” |
-| `0:18–0:42` | Select **The packet establishes one coordinated finish basis**. In **Exact evidence**, open `finish-schedule.md`, then open `rfi-042.json`; pause on each highlighted locator and excerpt. | “The result is not a confidence score. This `CONFLICTED` claim points to both exact source anchors and the rule that evaluated them: PL-17 in the finish schedule and PL-18 in RFI-042. No source, no claim.” |
-| `0:42–1:10` | Point down the ledger rows in order, then move to **Next safe action**, **Active stop conditions**, and the packet fingerprint. | “The same bounded compiler produces all five states: verified, inferred, needs confirmation, conflicted, and blocked. `VERIFIED` means only that this packet satisfies this ruleset’s declared predicates. The SHA-256 receipt records canonical stage digests for replay; it is not a signature or proof that a source is authentic.” |
-| `1:10–1:40` | Click **Append synthetic Rev C receipt**. Wait for **Replay compiled**. Show the appended raw line, the two changed rows, the causal diff, and unchanged `fabrication-release`. | “Now I append one visible synthetic traveler acknowledgement and recompile through the same core. Only finish coordination and RFI incorporation move to `VERIFIED`. The unrelated sample approval is still pending, so fabrication stays `BLOCKED` and the overall handoff stays on `HOLD`.” |
-| `1:40–1:58` | Click **Reset replay**. Point to the restored short fingerprint and the returned conflict/missing states. | “Reset removes that added evidence, recompiles the original raw packet, and restores the original fingerprint. The compiler never consults the wall clock or randomness; its timestamps are explicit, normalized packet data.” |
-| `1:58–2:13` | In **Human decision**, leave **Acknowledge HOLD** selected and click **Record human decision**. Point to the recorded packet fingerprint, then back to the unchanged ledger. | “The operator can acknowledge the hold or request a documented exception, but that record cannot rewrite evidence, clear a blocker, or turn `HOLD` into `READY`.” |
-| `2:13–2:30` | Expand **Operator handoff** and briefly show its evidence ledger. Collapse it; expand **Allowlisted shareable export** and show its verified outcomes and digest. | “The internal handoff retains evidence detail. The shareable Markdown is a separately constructed allowlist of eligible `VERIFIED` public-lineage outcomes—not an internal report scrubbed after the fact.” |
-| `2:30–2:48` | Switch to the terminal showing the completed `npm run verify`, then briefly show `git log --oneline`. | “During Build Week, GPT-5.6 Sol specialists challenged positioning, semantics, safety, and the demo. Codex turned those reviews and my constraints into tested commits for the compiler, receipt, CLI, privacy gate, and interface. The runtime uses no model or API key.” |
-| `2:48–2:55` | Return to the app’s `HOLD` decision and stop moving the pointer. | “If the evidence disagrees, release stops—or the exception stays visible.” |
+| `0:00–0:15` | Title, then baseline `HOLD` and Proposal Gate. | “In my drafting work, the shop prices one proposal, but the architect’s signed-off set governs fabrication. When those sources disagree, a PM or estimating miss can send the drawings—and the shop—in the wrong direction. ProofPack is the stop before that waste.” |
+| `0:15–0:49` | Show the source → ledger → handoff flow, then the exact PL-17 and PL-18 anchors. | “ProofPack is a bounded deterministic compiler, not a confidence score. This conflicted claim points to the exact finish schedule and approved RFI lines. Every claim carries a status, evidence, rule, next action, and stop condition.” |
+| `0:49–0:57` | Select `operator-email.md`; point back to unchanged `HOLD`. | “The synthetic operator email names Revision C, RFI-042, and PL-18. Raw prose alone has no authority, so HOLD does not change.” |
+| `0:57–1:16` | Show the real `npm run ai:propose` terminal run. Shorten only dead wait time and label the edit. | “This optional AI mode invokes Codex with GPT-5.6 Sol explicitly pinned, read-only, ephemeral, and schema-constrained. It uses saved ChatGPT authentication, strips API-key variables, and fails instead of silently falling back. Every input is synthetic.” |
+| `1:16–1:41` | Click **Review GPT-5.6 proposal**. Hold on two `ADMISSIBLE` cards and one `REJECTED / UNAUTHORIZED_AUTHORITY` card with exact source lines. | “The model returns candidate bindings, never claim statuses or a release decision. ProofPack admits the two exact traveler bindings. The estimator’s ‘sample looks approved’ line is rejected: only the sample register owns that authority. GPT-5.6 proposes; deterministic code decides what may enter.” |
+| `1:41–1:58` | Click **Apply 2 admissible bindings**. Show exactly two changed claims, lineage fields, `fabrication-release = BLOCKED`, and `HOLD`. | “Human application materializes fixed resolver fields with source-line and review-digest lineage, then recompiles through the same core. Exactly two claims change. The independent sample gate remains blocked, so release stays on HOLD.” |
+| `1:58–2:09` | Reset, then record a human HOLD acknowledgement. | “Reset restores the original input and receipt. A human can acknowledge the hold or request an exception, but that record cannot rewrite evidence or clear the blocker.” |
+| `2:09–2:23` | Show runtime card and allowlisted export. | “The AI command is optional. The default app, compiler, tests, and demo stay local with no key or model call. Shareable Markdown is a typed allowlist, not an internal report scrubbed afterward.” |
+| `2:23–2:32` | Show the fresh successful `npm run verify`. | “The release gate covers the compiler, proposal authority firewall, interface, privacy scanner, production build, and command-line demo.” |
+| `2:32–2:46` | Entrant statement slide. | “I was surprised by how quickly this became clear and usable, and by how strong the AI-assisted voiceover and build process were. I’m proud to be learning AI while running my business and already putting it into my day-to-day work.” |
+| `2:46–2:54` | Close on product rule and `HOLD`. | “GPT-5.6 proposes. ProofPack proves—or rejects. No source, no claim. No evidence, no release.” |
 
-Total scripted runtime: **2 minutes 55 seconds**.
+Total target runtime: **2 minutes 54 seconds**.
 
-## Recording truth checks
+## Truth checks
 
-- Do not say ProofPack proves truth, authenticates documents, guarantees privacy, or is tamper-proof.
-- Do not imply the replay clears the fabrication gate; sample approval deliberately keeps it blocked.
+- Model generation is nondeterministic; deterministic review and compilation begin after a candidate is supplied.
+- The recorded run proves the requested workflow and sanitized result, not cryptographic backend identity or evidence truth.
+- Do not say ProofPack authenticates documents, guarantees privacy, or is tamper-proof.
+- Do not imply the admitted pair clears fabrication; the sample register deliberately keeps it blocked.
 - Do not call the shareable export automatic redaction.
-- Do not say the application used client data or calls GPT-5.6 at runtime.
-- Do not show a hosted URL, repository URL, test result, `/feedback` Session ID, or submission status until it actually exists.
+- Do not imply the default web app makes a model or API call.

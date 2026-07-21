@@ -13,11 +13,8 @@ interface SourcePanelProps {
   selectedClaimTitle?: string;
   observations: readonly Observation[];
   isCompiling: boolean;
-  replayAppended: boolean;
   sourceViewerRef: RefObject<HTMLDivElement | null>;
   onSelectSource: (sourceId: string) => void;
-  onReplay: () => void;
-  onReset: () => void;
 }
 
 export function SourcePanel({
@@ -26,11 +23,8 @@ export function SourcePanel({
   selectedClaimTitle,
   observations,
   isCompiling,
-  replayAppended,
   sourceViewerRef,
   onSelectSource,
-  onReplay,
-  onReset,
 }: SourcePanelProps) {
   const selectedSource = sources.find(({ id }) => id === selectedSourceId) ?? sources[0];
   const evidenceForSource = selectedSource === undefined
@@ -109,34 +103,7 @@ export function SourcePanel({
         </pre>
       </div>
 
-      <div className="replay-controls" aria-label="Synthetic replay controls">
-        <div>
-          <span className="micro-label">Bounded replay</span>
-          <p>
-            {replayAppended
-              ? "Rev C receipt is present in the raw packet."
-              : "Append one approved synthetic receipt, then compile again."}
-          </p>
-        </div>
-        <div className="button-row">
-          <button
-            className="button button-primary"
-            type="button"
-            disabled={isCompiling || replayAppended}
-            onClick={onReplay}
-          >
-            Append synthetic Rev C receipt
-          </button>
-          <button
-            className="button button-secondary"
-            type="button"
-            disabled={isCompiling || !replayAppended}
-            onClick={onReset}
-          >
-            Reset replay
-          </button>
-        </div>
-      </div>
+      {isCompiling ? <p className="source-compiling-note">Raw sources are locked while the compiler runs.</p> : null}
     </section>
   );
 }

@@ -7,16 +7,24 @@ import {
   type ArtifactKind,
 } from "./components/HandoffPanel.tsx";
 import { SourcePanel } from "./components/SourcePanel.tsx";
+import { ProposalGate } from "./components/ProposalGate.tsx";
 import {
-  appendSyntheticReceipt,
   buildHumanDecision,
-  SYNTHETIC_RECEIPT_LINE,
+  hasProposalMaterialization,
   type HumanDecisionKind,
   type HumanDecisionRecord,
 } from "./release-gate-model.ts";
 import { compileProofPack } from "../src/proofpack/compile.ts";
-import { createDemoInput } from "../src/proofpack/demo-bundle.ts";
+import {
+  createDemoInput,
+  createRecordedProposalArtifact,
+} from "../src/proofpack/demo-bundle.ts";
 import { diffCompiledPacks } from "../src/proofpack/diff.ts";
+import {
+  materializeProposal,
+  reviewProposal,
+  type ProposalReview,
+} from "../src/proofpack/proposal.ts";
 import type {
   CompiledPack,
   CompileInput,
@@ -42,6 +50,8 @@ function artifactFor(pack: CompiledPack, kind: ArtifactKind): string {
 
 export function ProofPackApp() {
   const [input, setInput] = useState<CompileInput>(createDemoInput);
+  const [proposalArtifact] = useState(createRecordedProposalArtifact);
+  const [proposalReview, setProposalReview] = useState<ProposalReview | null>(null);
   const [selectedSourceId, setSelectedSourceId] = useState(DEFAULT_SOURCE_ID);
   const [selectedClaimId, setSelectedClaimId] = useState(DEFAULT_CLAIM_ID);
   const [compiled, setCompiled] = useState<CompiledPack | null>(null);
@@ -81,11 +91,7 @@ export function ProofPackApp() {
   const selectedObservations = compiled?.observations.filter(
     ({ claimId }) => claimId === selectedClaim?.id,
   ) ?? [];
-  const replayAppended = input.sources
-    .find(({ id }) => id === "incoming-receipts")
-    ?.content.replaceAll("\r\n", "\n")
-    .split("\n")
-    .includes(SYNTHETIC_RECEIPT_LINE) ?? false;
+  const proposalApplied = hasProposalMaterialization(input);
 
   function handleSelectClaim(claimId: string) {
     setSelectedClaimId(claimId);
@@ -96,35 +102,68 @@ export function ProofPackApp() {
     }
   }
 
-  async function handleReplay() {
-    if (compiled === null || baseline === null || isCompiling || replayAppended) return;
-    const replayInput = appendSyntheticReceipt(input);
-    setInput(replayInput);
-    setHumanDecision(null);
-    setSelectedSourceId("incoming-receipts");
+  async function handleProposalReview() {
+    if (compiled === null || isCompiling || proposalReview !== null) return;
     setIsCompiling(true);
-    setLiveStatus("Rev C receipt appended to raw input. Recompiling through the shared core…");
+    setLiveStatus("Reviewing the recorded GPT-5.6 proposal against the current packet locally…");
     try {
-      const replayPack = await compileProofPack(replayInput);
-      const replayDiff = diffCompiledPacks(baseline, replayPack);
-      setCompiled(replayPack);
-      setDiff(replayDiff);
+      const review = await reviewProposal(input, proposalArtifact.proposal);
+      setProposalReview(review);
       setCompileError(null);
-      setLiveStatus(
-        `Replay compiled: ${replayDiff.changedClaimIds.length} causal claims changed. Fabrication remains ${replayPack.claims.find(({ id }) => id === "fabrication-release")?.status ?? "unresolved"}.`,
-      );
+      if (review.status === "REVIEWED") {
+        const admitted = review.candidates.filter(({ decision }) => decision === "ADMISSIBLE").length;
+        const rejected = review.candidates.length - admitted;
+        setLiveStatus(
+          `Deterministic review complete: ${admitted} admissible, ${rejected} rejected. No compiler input changed.`,
+        );
+      } else {
+        setLiveStatus(`Proposal rejected: ${review.reasonCodes.join(", ")}. No compiler input changed.`);
+      }
     } catch (error: unknown) {
       setCompileError(formatCompileError(error));
-      setLiveStatus("Replay compilation failed. The previous valid handoff remains displayed.");
+      setLiveStatus("Proposal review failed. No compiler input changed.");
     } finally {
       setIsCompiling(false);
     }
   }
 
-  async function handleReset() {
-    if (isCompiling || !replayAppended) return;
+  async function handleProposalApply() {
+    if (
+      compiled === null
+      || baseline === null
+      || isCompiling
+      || proposalApplied
+      || proposalReview?.status !== "REVIEWED"
+      || !proposalReview.materializable
+    ) return;
+    setHumanDecision(null);
+    setSelectedSourceId("incoming-receipts");
+    setIsCompiling(true);
+    setLiveStatus("Applying two admitted bindings through the deterministic proposal gate…");
+    try {
+      const materializedInput = await materializeProposal(input, proposalArtifact.proposal);
+      const materializedPack = await compileProofPack(materializedInput);
+      const materializedDiff = diffCompiledPacks(baseline, materializedPack);
+      setInput(materializedInput);
+      setCompiled(materializedPack);
+      setDiff(materializedDiff);
+      setCompileError(null);
+      setLiveStatus(
+        `Proposal applied: ${materializedDiff.changedClaimIds.length} causal claims changed. Fabrication remains ${materializedPack.claims.find(({ id }) => id === "fabrication-release")?.status ?? "unresolved"}.`,
+      );
+    } catch (error: unknown) {
+      setCompileError(formatCompileError(error));
+      setLiveStatus("Proposal application failed. The previous valid handoff remains displayed.");
+    } finally {
+      setIsCompiling(false);
+    }
+  }
+
+  async function handleProposalReset() {
+    if (isCompiling || (proposalReview === null && !proposalApplied)) return;
     const resetInput = createDemoInput();
     setInput(resetInput);
+    setProposalReview(null);
     setHumanDecision(null);
     setSelectedSourceId(DEFAULT_SOURCE_ID);
     setSelectedClaimId(DEFAULT_CLAIM_ID);
@@ -136,10 +175,10 @@ export function ProofPackApp() {
       setBaseline(resetPack);
       setDiff(null);
       setCompileError(null);
-      setLiveStatus(`Replay reset. Original fingerprint ${resetPack.receipt.inputDigest.slice(0, 12)} restored.`);
+      setLiveStatus(`Proposal gate reset. Original fingerprint ${resetPack.receipt.inputDigest.slice(0, 12)} restored.`);
     } catch (error: unknown) {
       setCompileError(formatCompileError(error));
-      setLiveStatus("Reset compilation failed. The previous valid handoff remains displayed.");
+      setLiveStatus("Proposal reset failed. The previous valid handoff remains displayed.");
     } finally {
       setIsCompiling(false);
     }
@@ -242,6 +281,17 @@ export function ProofPackApp() {
         </aside>
       )}
 
+      <ProposalGate
+        applied={proposalApplied}
+        artifact={proposalArtifact}
+        isBusy={isCompiling}
+        review={proposalReview}
+        onApply={handleProposalApply}
+        onInspectSource={handleInspectEvidence}
+        onReset={handleProposalReset}
+        onReview={handleProposalReview}
+      />
+
       <div className="triptych">
         <SourcePanel
           sources={input.sources}
@@ -249,11 +299,8 @@ export function ProofPackApp() {
           selectedClaimTitle={selectedClaim?.title}
           observations={selectedObservations}
           isCompiling={isCompiling}
-          replayAppended={replayAppended}
           sourceViewerRef={sourceViewerRef}
           onSelectSource={setSelectedSourceId}
-          onReplay={handleReplay}
-          onReset={handleReset}
         />
         <LedgerPanel
           pack={compiled}

@@ -252,6 +252,304 @@ h1 {
   margin: 0;
 }
 
+.proposal-gate {
+  margin-top: 10px;
+  border: 2px solid var(--ink);
+  background: var(--paper-light);
+  box-shadow: var(--shadow);
+}
+
+.proposal-gate-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 13px;
+  border-bottom: 1px solid var(--ink);
+  background: var(--paper);
+}
+
+.proposal-gate-heading h2 {
+  margin: 2px 0 0;
+  font-family: var(--serif);
+  font-size: clamp(20px, 1.7vw, 27px);
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+.proposal-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.proposal-badges span {
+  padding: 3px 6px;
+  border: 1px solid var(--blocked);
+  color: var(--blocked);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.proposal-stages {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.8fr) minmax(550px, 1.65fr) minmax(280px, 0.9fr);
+}
+
+.proposal-stages > section {
+  display: grid;
+  grid-template-columns: 27px minmax(0, 1fr);
+  gap: 9px;
+  min-width: 0;
+  padding: 11px;
+  border-right: 1px solid var(--rule);
+}
+
+.proposal-stages > section:last-child {
+  border-right: 0;
+}
+
+.proposal-stage-number {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  border: 1px solid var(--orange-dark);
+  color: var(--orange-dark);
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.proposal-stages h3 {
+  margin: 1px 0 5px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.proposal-stages p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.proposal-stages code {
+  font-family: var(--mono);
+}
+
+.proposal-binding {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0 0;
+}
+
+.proposal-binding div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px;
+}
+
+.proposal-binding dt,
+.proposal-binding dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.proposal-binding dt {
+  color: var(--ink-soft);
+  text-transform: uppercase;
+}
+
+.proposal-binding dd {
+  overflow: hidden;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.proposal-legend strong:first-child {
+  color: var(--verified);
+}
+
+.proposal-legend strong:nth-of-type(2),
+.proposal-legend code {
+  color: var(--blocked);
+}
+
+.proposal-awaiting,
+.proposal-review-error,
+.proposal-review-summary,
+.proposal-application-state {
+  margin-top: 8px !important;
+  padding: 7px;
+  border-left: 3px solid var(--orange);
+  background: var(--paper);
+}
+
+.proposal-review-error {
+  display: grid;
+  color: var(--blocked);
+}
+
+.proposal-review-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.proposal-review-summary code {
+  margin-left: auto;
+  color: var(--ink-soft);
+}
+
+.proposal-candidates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 7px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.proposal-candidate {
+  min-width: 0;
+  padding: 7px;
+  border: 1px solid var(--rule-light);
+  border-top: 4px solid var(--rule);
+  background: var(--paper);
+}
+
+.proposal-candidate[data-decision="ADMISSIBLE"] {
+  border-top-color: var(--verified);
+}
+
+.proposal-candidate[data-decision="REJECTED"] {
+  border-top-color: var(--blocked);
+}
+
+.proposal-candidate-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.proposal-candidate-heading > div {
+  display: grid;
+  min-width: 0;
+}
+
+.proposal-candidate-heading strong,
+.proposal-candidate-heading code,
+.proposal-decision {
+  overflow-wrap: anywhere;
+}
+
+.proposal-candidate-heading strong {
+  font-size: 11px;
+}
+
+.proposal-candidate-heading code {
+  color: var(--ink-soft);
+  font-size: 9px;
+}
+
+.proposal-decision {
+  padding: 2px 4px;
+  border: 1px solid currentColor;
+  color: var(--blocked);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+[data-decision="ADMISSIBLE"] .proposal-decision {
+  color: var(--verified);
+}
+
+.proposal-reasons {
+  margin-top: 5px !important;
+  color: var(--blocked) !important;
+  font-family: var(--mono);
+  font-size: 10px !important;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+[data-decision="ADMISSIBLE"] .proposal-reasons {
+  color: var(--verified) !important;
+}
+
+.proposal-anchors {
+  display: grid;
+  gap: 3px;
+  margin-top: 5px;
+}
+
+.proposal-anchors button {
+  display: grid;
+  gap: 2px;
+  min-height: 36px;
+  padding: 4px;
+  border: 1px solid var(--rule-light);
+  background: var(--paper-light);
+  text-align: left;
+}
+
+.proposal-anchors button:not(:disabled):hover {
+  border-color: var(--orange-dark);
+}
+
+.proposal-anchors code {
+  color: var(--orange-dark);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.proposal-anchors span {
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.proposal-rationale {
+  display: grid;
+  gap: 2px;
+  margin-top: 5px !important;
+  padding-top: 5px;
+  border-top: 1px solid var(--rule-light);
+  font-size: 10px !important;
+}
+
+.proposal-rationale span {
+  color: var(--blocked);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.proposal-actions {
+  margin-top: 8px;
+}
+
+.proposal-actions .button {
+  flex: 1 1 140px;
+  min-height: 40px;
+  padding: 7px 9px;
+  font-size: 11px;
+}
+
 .triptych {
   display: grid;
   grid-template-columns: minmax(300px, 0.92fr) minmax(390px, 1.13fr) minmax(330px, 0.95fr);
@@ -463,18 +761,13 @@ h1 {
   overflow-wrap: anywhere;
 }
 
-.replay-controls {
+.source-compiling-note {
   margin: 0 13px 13px;
-  padding: 12px;
+  padding: 8px;
   border: 1px solid var(--rule);
-  border-top: 4px solid var(--orange);
   background: var(--paper);
-}
-
-.replay-controls p {
-  margin: 4px 0 10px;
   color: var(--ink-soft);
-  font-size: 11px;
+  font-size: 9px;
 }
 
 .button-row {
@@ -1256,6 +1549,19 @@ h1 {
 }
 
 @media (max-width: 1220px) {
+  .proposal-stages {
+    grid-template-columns: minmax(240px, 0.8fr) minmax(520px, 1.7fr);
+  }
+
+  .proposal-stages > section:nth-child(2) {
+    border-right: 0;
+  }
+
+  .proposal-stages > section:last-child {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--rule);
+  }
+
   .triptych {
     grid-template-columns: minmax(290px, 0.85fr) minmax(390px, 1.15fr);
   }
@@ -1300,6 +1606,32 @@ h1 {
     text-align: left;
   }
 
+  .proposal-gate-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .proposal-badges {
+    justify-content: flex-start;
+  }
+
+  .proposal-stages {
+    grid-template-columns: 1fr;
+  }
+
+  .proposal-stages > section,
+  .proposal-stages > section:nth-child(2),
+  .proposal-stages > section:last-child {
+    grid-column: auto;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .proposal-stages > section:last-child {
+    border-bottom: 0;
+  }
+
   .triptych {
     grid-template-columns: 1fr;
   }
@@ -1340,6 +1672,15 @@ h1 {
 
   .pipeline b {
     font-size: 12px;
+  }
+
+  .proposal-candidates {
+    grid-template-columns: 1fr;
+  }
+
+  .proposal-review-summary code {
+    width: 100%;
+    margin-left: 0;
   }
 
   .panel-heading {
@@ -1450,7 +1791,7 @@ h1 {
     margin-top: 12px;
   }
 
-  .replay-controls,
+  .proposal-actions,
   .human-decision form,
   .export-card .button-row {
     display: none;

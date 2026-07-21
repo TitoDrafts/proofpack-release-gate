@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { createServer } from "vite";
-import { appendSyntheticReceipt, SYNTHETIC_RECEIPT_LINE } from "../app/release-gate-model.ts";
-import { compileProofPack, diffCompiledPacks } from "../src/proofpack/index.ts";
+import { canonicalStringify, compileProofPack, diffCompiledPacks, materializeProposal, reviewProposal, sha256Hex } from "../src/proofpack/index.ts";
+import type { RecordedProposalArtifact } from "../src/proofpack/demo-bundle.ts";
 import type { CompileInput } from "../src/proofpack/types.ts";
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
 
-test("web demo raw bundle compiles baseline, replay, and exact reset", async (context) => {
+test("web demo raw bundle reviews, applies, and exactly resets the recorded proposal", async (context) => {
   const vite = await createServer({
     root: projectRoot,
     configFile: false,
@@ -19,6 +19,7 @@ test("web demo raw bundle compiles baseline, replay, and exact reset", async (co
   context.after(async () => vite.close());
   const demoModule = await vite.ssrLoadModule("/src/proofpack/demo-bundle.ts") as {
     createDemoInput: () => CompileInput;
+    createRecordedProposalArtifact: () => RecordedProposalArtifact;
   };
 
   const first = demoModule.createDemoInput();
@@ -50,16 +51,47 @@ test("web demo raw bundle compiles baseline, replay, and exact reset", async (co
     { id: "traveler-current-finish", status: "INFERRED" },
   ]);
 
-  const replayInput = appendSyntheticReceipt(baselineInput);
-  assert.equal(
-    replayInput.sources.find(({ id }) => id === "incoming-receipts")?.content,
-    `${SYNTHETIC_RECEIPT_LINE}\n`,
+  const artifact = demoModule.createRecordedProposalArtifact();
+  const secondArtifact = demoModule.createRecordedProposalArtifact();
+  assert.deepEqual(
+    {
+      recorded: artifact.recorded,
+      trust: artifact.trust,
+      authority: artifact.authority,
+      model: artifact.model,
+      cliVersion: artifact.cliVersion,
+      authMode: artifact.authMode,
+    },
+    {
+      recorded: true,
+      trust: "UNTRUSTED",
+      authority: "NON_AUTHORITATIVE",
+      model: "gpt-5.6-sol",
+      cliVersion: "0.144.6",
+      authMode: "CHATGPT",
+    },
   );
-  const replay = await compileProofPack(replayInput);
-  const diff = diffCompiledPacks(baseline, replay);
+  assert.notStrictEqual(artifact.proposal, secondArtifact.proposal);
+  assert.equal(await sha256Hex(canonicalStringify(artifact.proposal)), artifact.proposalDigest);
+  const review = await reviewProposal(baselineInput, artifact.proposal);
+  assert.equal(review.status, "REVIEWED");
+  assert.equal(review.status === "REVIEWED" ? review.reviewDigest : undefined, artifact.recordedReviewDigest);
+  assert.deepEqual(
+    review.candidates
+      .map(({ slotId, decision }) => ({ slotId, decision }))
+      .sort((left, right) => left.slotId.localeCompare(right.slotId)),
+    [
+      { slotId: "sample-approval", decision: "REJECTED" },
+      { slotId: "traveler-finish-cut-state", decision: "ADMISSIBLE" },
+      { slotId: "traveler-rfi-revision", decision: "ADMISSIBLE" },
+    ],
+  );
+  const appliedInput = await materializeProposal(baselineInput, artifact.proposal);
+  const applied = await compileProofPack(appliedInput);
+  const diff = diffCompiledPacks(baseline, applied);
   assert.deepEqual(diff.changedClaimIds, ["finish-coordinated", "rfi-incorporated"]);
-  assert.equal(replay.claims.find(({ id }) => id === "fabrication-release")?.status, "BLOCKED");
-  assert.equal(replay.handoff.decision, "HOLD");
+  assert.equal(applied.claims.find(({ id }) => id === "fabrication-release")?.status, "BLOCKED");
+  assert.equal(applied.handoff.decision, "HOLD");
 
   const reset = await compileProofPack(demoModule.createDemoInput());
   assert.deepEqual(reset.receipt, baseline.receipt);
