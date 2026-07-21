@@ -215,7 +215,7 @@ The shareable projection:
 - exposes a digest of the final shareable projection only;
 - rejects output when restricted text reaches a public field or safety lineage is ambiguous.
 
-Tests seed all string-bearing fields with a recognizable sentinel and scan Markdown, rendered HTML, filenames, metadata, diagnostics, and downloads for leakage.
+Automated regressions seed the bounded projection's internal authored fields and scan shareable JSON, Markdown, and generated artifacts for a recognizable sentinel. Separate rendered-product tests and a hands-on browser pass cover the built interface and export controls; this is bounded release evidence, not proof that every arbitrary string surface is safe.
 
 The UI and README call this an “allowlisted shareable export,” not a guarantee that arbitrary input is automatically safe or anonymous.
 
