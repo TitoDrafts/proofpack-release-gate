@@ -20,7 +20,7 @@ export interface SourceDeclaration {
 }
 
 export interface PacketManifest {
-  schemaVersion: "proofpack.packet/v1";
+  schemaVersion: "proofpack.packet/v2";
   packetId: string;
   title: string;
   publicAlias: string;
@@ -59,10 +59,10 @@ export interface ClaimRule {
 }
 
 export interface RuleSet {
-  schemaVersion: "proofpack.rules/v1";
+  schemaVersion: "proofpack.rules/v2";
   rulesetId: string;
   rulesetVersion: string;
-  engineVersion: string;
+  engineVersion: "2.0.0";
   claims: ClaimRule[];
 }
 

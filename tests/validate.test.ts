@@ -5,7 +5,7 @@ import type { AnchorRule, ClaimKind, ClaimRule, CompileInput } from "../src/proo
 
 const validInput: CompileInput = {
   manifest: {
-    schemaVersion: "proofpack.packet/v1",
+    schemaVersion: "proofpack.packet/v2",
     packetId: "project-alder-aw-214",
     title: "Project Alder · Reception Desk AW-214",
     publicAlias: "Synthetic millwork release packet",
@@ -20,10 +20,10 @@ const validInput: CompileInput = {
     }]
   },
   rules: {
-    schemaVersion: "proofpack.rules/v1",
+    schemaVersion: "proofpack.rules/v2",
     rulesetId: "millwork-release",
-    rulesetVersion: "1.0.0",
-    engineVersion: "1.0.0",
+    rulesetVersion: "2.0.0",
+    engineVersion: "2.0.0",
     claims: []
   },
   sources: [{
@@ -88,7 +88,7 @@ function assertDiagnosticPaths(input: unknown, code: string, paths: string[]): v
   );
 }
 
-test("accepts the closed v1 packet contract", () => {
+test("accepts the closed v2 packet, rules, and engine contract", () => {
   assert.deepEqual(validateCompileInput(validInput), { ok: true, diagnostics: [] });
 });
 
@@ -239,19 +239,19 @@ const versionAndValueRejections: Array<{
 }> = [
   {
     name: "an unknown packet schema version",
-    mutate: (input) => { input.manifest.schemaVersion = "proofpack.packet/v2" as never; },
+    mutate: (input) => { input.manifest.schemaVersion = "proofpack.packet/v1" as never; },
     code: "PACKET_SCHEMA_VERSION_UNKNOWN",
     path: "$.manifest.schemaVersion",
   },
   {
     name: "an unknown rules schema version",
-    mutate: (input) => { input.rules.schemaVersion = "proofpack.rules/v2" as never; },
+    mutate: (input) => { input.rules.schemaVersion = "proofpack.rules/v1" as never; },
     code: "RULESET_SCHEMA_VERSION_UNKNOWN",
     path: "$.rules.schemaVersion",
   },
   {
     name: "an unknown engine version",
-    mutate: (input) => { input.rules.engineVersion = "2.0.0"; },
+    mutate: (input) => { input.rules.engineVersion = "1.0.0" as never; },
     code: "ENGINE_VERSION_UNKNOWN",
     path: "$.rules.engineVersion",
   },

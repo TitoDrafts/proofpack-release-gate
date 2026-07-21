@@ -250,7 +250,7 @@ const receiptKeys: Array<keyof Receipt> = [
 
 function parseReceipt(value: unknown): Receipt {
   if (!isRecord(value) || Object.keys(value).sort().join("\0") !== [...receiptKeys].sort().join("\0")) {
-    throw new CliInputError("RECEIPT_INVALID", "The receipt does not match the closed v1 contract.");
+    throw new CliInputError("RECEIPT_INVALID", "The receipt does not match the closed proofpack.receipt/v1 contract.");
   }
   if (value.schemaVersion !== "proofpack.receipt/v1" || value.algorithm !== "SHA-256") {
     throw new CliInputError("RECEIPT_INVALID", "The receipt schema or algorithm is not supported.");

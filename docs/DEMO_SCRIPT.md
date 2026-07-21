@@ -4,7 +4,7 @@
 
 1. Run a fresh `npm run verify` in the first terminal and leave its final successful output visible for the verification beat.
 2. After verification finishes, run `npm run dev` in a second terminal; open the exact local URL printed by the server.
-3. Reload the page and wait for the live status to say the baseline compiled. Confirm the fingerprint is `d6c2f35ff5c` and no human decision is recorded.
+3. Reload the page and wait for the live status to say the baseline compiled. Confirm the fingerprint is `9d8a5168a625` and no human decision is recorded.
 4. Use only the bundled fictional Project Alder packet. Do not open personal files, notifications, browser history, or any real project material while recording.
 5. Record at a readable desktop width. Keep the pointer still except for the actions below.
 

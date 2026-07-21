@@ -107,7 +107,7 @@ export function makeCompileInput(
 ): CompileInput {
   return {
     manifest: {
-      schemaVersion: "proofpack.packet/v1",
+      schemaVersion: "proofpack.packet/v2",
       packetId: "status-fixture",
       title: "Status Fixture",
       publicAlias: "Synthetic status fixture",
@@ -122,10 +122,10 @@ export function makeCompileInput(
       })),
     },
     rules: {
-      schemaVersion: "proofpack.rules/v1",
+      schemaVersion: "proofpack.rules/v2",
       rulesetId: "status-rules",
-      rulesetVersion: "1.0.0",
-      engineVersion: "1.0.0",
+      rulesetVersion: "2.0.0",
+      engineVersion: "2.0.0",
       claims,
     },
     sources,

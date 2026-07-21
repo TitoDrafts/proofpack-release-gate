@@ -87,10 +87,11 @@ CLI filesystem I/O ──┘              -> classify -> derive HOLD / READY
 ```
 
 - The shared `src/proofpack` core receives values and owns validation, normalization, anchor resolution, classification, handoff derivation, safety lineage, artifacts, diffs, and receipts. It contains no filesystem, DOM, wall-clock, randomness, locale-sensitive formatting, or network dependency.
+- The final breaking contract is explicitly identified as packet schema `proofpack.packet/v2`, rules schema `proofpack.rules/v2`, ruleset `2.0.0`, and engine `2.0.0`; legacy v1 inputs are rejected instead of being interpreted under changed semantics.
 - The CLI confines declared inputs beneath the packet directory, rejects malformed UTF-8 with fatal decoding, invokes the core once, and publishes a complete artifact bundle only after successful compilation.
 - The web adapter bundles the seven raw fixture files, invokes the same core in the browser, and owns only interaction state.
 - Supported selectors are one unambiguous text/Markdown line containing a declared string, predeclared log events whose declared fields match, and JSON Pointer equality or presence checks.
-- Supported claim kinds are `direct`, `inference`, `exclusive`, and `gate`, with named dependencies and an optional claim-local authority resolver for exclusive values. A gate may be established by its matched direct supports or by all declared dependencies being verified; a gate with neither route is rejected.
+- Supported claim kinds are `direct`, `inference`, `exclusive`, and `gate`, with named dependencies and an optional claim-local authority resolver for exclusive values. A gate verifies only when every declared direct support matches and every declared dependency is `VERIFIED`; dependency-only gates are allowed, while a gate with neither verification route is rejected.
 - Only `manifest.publicAlias`, `claim.publicTitle`, and `claim.publicNextAction` can supply authored strings to the shareable projection. Internal titles, actions, identifiers, source paths, evidence, and diagnostics have no projection route.
 - There is no arbitrary JavaScript, regular-expression editor, plug-in execution, general expression language, OCR, PDF parsing, or natural-language extraction.
 
@@ -98,7 +99,7 @@ CLI filesystem I/O ──┘              -> classify -> derive HOLD / READY
 
 | Status | Meaning in a valid compile |
 | --- | --- |
-| `VERIFIED` | Required direct predicates or declared gate/resolver conditions are satisfied by valid anchors with no qualifying contradiction. |
+| `VERIFIED` | Required direct predicates, gate supports, dependencies, or resolver conditions are satisfied by valid anchors with no qualifying contradiction. |
 | `INFERRED` | A named deterministic inference has complete admissible premises, but no direct verification establishes the claim. |
 | `NEEDS_CONFIRMATION` | Evaluation completed, but declared evidence or a required premise is missing or insufficient. |
 | `CONFLICTED` | Qualifying evidence contradicts the claim, exclusive values remain unresolved, or a dependency conflict propagates. |
@@ -114,7 +115,7 @@ The complete local gate is:
 npm run verify
 ```
 
-It runs lint, typecheck, TypeScript and privacy-scanner tests, a production build, rendered-product tests, the CLI demo, and the repository/generated-artifact privacy scan. The fresh final release run on 2026-07-21 passed 139 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests; the build, CLI demo, and final privacy scan also exited successfully.
+It runs lint, typecheck, TypeScript and privacy-scanner tests, a production build, rendered-product tests, the CLI demo, and the repository/generated-artifact privacy scan. The fresh final release run on 2026-07-21 passed 140 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests; the build, CLI demo, and final privacy scan also exited successfully.
 
 Useful focused commands:
 
@@ -141,6 +142,7 @@ GPT-5.6 Sol and Codex contributed during development only:
 | Evidence compiler | Codex implemented canonicalization, exact anchors, status algebra, and deterministic handoff behavior; review added selector and resolver boundary cases. | `0fee4cf`, `a987bef` |
 | Artifacts, receipt, CLI, and privacy gate | Codex implemented typed allowlist export, stage digests, causal diff, atomic CLI publication, and the repository privacy scanner; repeated review closed verification and credential-detection gaps. | `5c518c5`, `509cf13`, `d724219` |
 | Product interface | Codex implemented the single-screen triptych, bounded replay/reset, evidence navigation, non-overriding human record, and artifact controls, followed by independent review and an accessible-control labeling fix. | `5c71f29`, `ab05eb8` |
+| Final adversarial hardening | A pinned independent release review found and Codex closed public-projection, gate-grammar, and malformed UTF-8 boundaries with failing regressions before implementation. | `e80810b` |
 
 The detailed, evidence-bounded record is in [docs/BUILD_PROVENANCE.md](docs/BUILD_PROVENANCE.md). Git commits show the resulting artifacts; the primary Codex thread is the source record for the human/model interaction.
 

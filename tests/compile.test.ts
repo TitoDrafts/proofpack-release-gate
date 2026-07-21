@@ -58,7 +58,7 @@ test("compiles Project Alder into its required deterministic release handoff", a
     { id: "rfi-incorporated", reasonCodes: ["DECLARED_EVIDENCE_MISSING"], missingPredicates: ["rfi-042-traveler-ack"], publicEligible: false, lineageSafety: "RESTRICTED" },
     { id: "traveler-current-finish", reasonCodes: ["INFERENCE_PREMISES_COMPLETE"], missingPredicates: [], publicEligible: false, lineageSafety: "RESTRICTED" },
   ]);
-  assert.equal(result.claims.every(({ ruleId, ruleVersion }) => ruleId === "millwork-release" && ruleVersion === "1.0.0"), true);
+  assert.equal(result.claims.every(({ ruleId, ruleVersion }) => ruleId === "millwork-release" && ruleVersion === "2.0.0"), true);
 });
 
 test("resolves exact line, JSON pointer, and log anchors from normalized source content", async () => {

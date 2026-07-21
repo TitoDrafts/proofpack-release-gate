@@ -12,7 +12,7 @@ ProofPack compiles synthetic millwork handoff files into evidence-linked release
 
 ## Track
 
-Work and productivity
+Work and Productivity
 
 ## Problem
 
@@ -40,7 +40,7 @@ The Build Week runtime has no LLM call, API key requirement, analytics, remote f
 
 GPT-5.6 Sol specialist passes acted as build-time critics for competition positioning, the commercial-millwork wedge, the three-minute product story, exact status semantics, deterministic receipts, safety lineage, and adversarial verification. Codex synthesized those reviews with the entrant’s decisions into the design and implementation plan, then carried out test-first implementation and review loops across the validator, compiler, CLI, artifacts, privacy gate, and interface.
 
-The resulting work is traceable in Git: design and plan (`aaaff70`, `a592c9a`); closed packet contract and review fix (`f9878e3`, `598d566`); compiler and semantic fix (`0fee4cf`, `a987bef`); artifacts/CLI and formal hardening (`5c518c5`, `509cf13`, `d724219`); and the product interface plus accessible-control fix (`5c71f29`, `ab05eb8`). GPT-5.6 and Codex are not runtime dependencies and do not make fabrication decisions.
+The resulting work is traceable in Git: design and plan (`aaaff70`, `a592c9a`); closed packet contract and review fix (`f9878e3`, `598d566`); compiler and semantic fix (`0fee4cf`, `a987bef`); artifacts/CLI and formal hardening (`5c518c5`, `509cf13`, `d724219`); product interface and accessible-control fix (`5c71f29`, `ab05eb8`); release artifacts (`944e6d1`, `26f7c7f`, `55287a6`); and pinned adversarial hardening (`e80810b`). GPT-5.6 and Codex are not runtime dependencies and do not make fabrication decisions.
 
 The entrant retained the domain choice, synthetic-only boundary, model-free runtime, release semantics, rule that human exceptions cannot erase evidence, final scope, and approval of shipped behavior.
 
@@ -58,7 +58,7 @@ The entrant retained the domain choice, synthetic-only boundary, model-free runt
 - Every claim result carries a status, reason code, ruleset version, evidence IDs, missing predicates, and next action; resolved observations carry exact locators and excerpts, while stop conditions appear only where declared.
 - A causal replay diff in which only `finish-coordinated` and `rfi-incorporated` change, while the sample gate keeps release blocked.
 - Reproducibility/integrity receipts plus internal and allowlisted shareable Markdown artifacts.
-- A complete local verification gate. The fresh 2026-07-21 final release run passed 139 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests, plus lint, typecheck, production build, CLI demo, and privacy scan.
+- A complete local verification gate. The fresh 2026-07-21 final release run passed 140 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests, plus lint, typecheck, production build, CLI demo, and privacy scan.
 
 ## Lessons learned
 

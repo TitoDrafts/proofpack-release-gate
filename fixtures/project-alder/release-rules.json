@@ -1,8 +1,8 @@
 {
-  "schemaVersion": "proofpack.rules/v1",
+  "schemaVersion": "proofpack.rules/v2",
   "rulesetId": "millwork-release",
-  "rulesetVersion": "1.0.0",
-  "engineVersion": "1.0.0",
+  "rulesetVersion": "2.0.0",
+  "engineVersion": "2.0.0",
   "claims": [
     {
       "id": "fabrication-release",
@@ -23,12 +23,36 @@
           "safety": "RESTRICTED"
         },
         {
+          "id": "sample-pl18-approved",
+          "sourceId": "sample-register",
+          "selector": {
+            "kind": "json",
+            "pointer": "/sample/status",
+            "equals": "APPROVED"
+          },
+          "effect": "SUPPORT",
+          "strength": "DIRECT",
+          "safety": "RESTRICTED"
+        },
+        {
           "id": "sample-pl18-pending",
           "sourceId": "sample-register",
           "selector": {
             "kind": "json",
             "pointer": "/sample/status",
             "equals": "PENDING"
+          },
+          "effect": "BLOCK",
+          "strength": "DIRECT",
+          "safety": "RESTRICTED"
+        },
+        {
+          "id": "sample-pl18-rejected",
+          "sourceId": "sample-register",
+          "selector": {
+            "kind": "json",
+            "pointer": "/sample/status",
+            "equals": "REJECTED"
           },
           "effect": "BLOCK",
           "strength": "DIRECT",

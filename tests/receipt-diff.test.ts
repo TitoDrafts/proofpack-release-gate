@@ -144,6 +144,40 @@ test("replay plus sample approval satisfies the dependency-established fabricati
   assert.equal(result.handoff.decision, "READY");
 });
 
+test("fabrication release requires explicit sample approval and fails closed for every other sample state", async () => {
+  const cases = [
+    { sampleStatus: "APPROVED", claimStatus: "VERIFIED", decision: "READY", missing: [] },
+    { sampleStatus: "PENDING", claimStatus: "BLOCKED", decision: "HOLD", missing: [] },
+    { sampleStatus: "REJECTED", claimStatus: "BLOCKED", decision: "HOLD", missing: [] },
+    {
+      sampleStatus: undefined,
+      claimStatus: "NEEDS_CONFIRMATION",
+      decision: "HOLD",
+      missing: ["sample-pl18-approved"],
+    },
+  ] as const;
+
+  for (const item of cases) {
+    const input = appendReceipt(await loadProjectAlder(), replayLine);
+    const sampleRegister = input.sources.find(({ id }) => id === "sample-register");
+    assert.ok(sampleRegister);
+    const document = JSON.parse(sampleRegister.content) as { sample: { status?: string } };
+    if (item.sampleStatus === undefined) {
+      delete document.sample.status;
+    } else {
+      document.sample.status = item.sampleStatus;
+    }
+    sampleRegister.content = JSON.stringify(document, null, 2);
+
+    const result = await compileProofPack(input);
+    const release = result.claims.find(({ id }) => id === "fabrication-release");
+
+    assert.equal(release?.status, item.claimStatus, item.sampleStatus ?? "missing");
+    assert.equal(result.handoff.decision, item.decision, item.sampleStatus ?? "missing");
+    assert.deepEqual(release?.missingPredicates, item.missing, item.sampleStatus ?? "missing");
+  }
+});
+
 test("reset recompilation restores the exact original receipt", async () => {
   const beforeInput = await loadProjectAlder();
   const before = await compileProofPack(beforeInput);

@@ -64,7 +64,7 @@ function rejectUnknownFields(
   const allowedFields = new Set(allowed);
   for (const key of Object.keys(value)) {
     if (!allowedFields.has(key)) {
-      addDiagnostic(diagnostics, code, `${path}.${key}`, "Field is not part of the closed v1 contract.");
+      addDiagnostic(diagnostics, code, `${path}.${key}`, "Field is not part of the closed v2 packet/rules contract.");
     }
   }
 }
@@ -157,7 +157,7 @@ function enumValue<T extends string>(
   }
   const candidate = value[key];
   if (typeof candidate !== "string" || !allowed.has(candidate as T)) {
-    addDiagnostic(diagnostics, unknownCode, `${path}.${key}`, "Value is not recognized by the v1 contract.");
+    addDiagnostic(diagnostics, unknownCode, `${path}.${key}`, "Value is not recognized by the v2 packet/rules contract.");
     return undefined;
   }
   return candidate as T;
@@ -479,7 +479,7 @@ function validateManifest(value: unknown, diagnostics: Diagnostic[]): UnknownRec
     path,
   );
   const schemaVersion = requiredString(manifest, "schemaVersion", diagnostics, "PACKET_SCHEMA_VERSION_REQUIRED", path);
-  if (schemaVersion !== undefined && schemaVersion !== "proofpack.packet/v1") {
+  if (schemaVersion !== undefined && schemaVersion !== "proofpack.packet/v2") {
     addDiagnostic(
       diagnostics,
       "PACKET_SCHEMA_VERSION_UNKNOWN",
@@ -513,7 +513,7 @@ function validateRuleSet(value: unknown, diagnostics: Diagnostic[]): UnknownReco
     path,
   );
   const schemaVersion = requiredString(rules, "schemaVersion", diagnostics, "RULESET_SCHEMA_VERSION_REQUIRED", path);
-  if (schemaVersion !== undefined && schemaVersion !== "proofpack.rules/v1") {
+  if (schemaVersion !== undefined && schemaVersion !== "proofpack.rules/v2") {
     addDiagnostic(
       diagnostics,
       "RULESET_SCHEMA_VERSION_UNKNOWN",
@@ -527,7 +527,7 @@ function validateRuleSet(value: unknown, diagnostics: Diagnostic[]): UnknownReco
     addDiagnostic(diagnostics, "RULESET_VERSION_INVALID", `${path}.rulesetVersion`, "Ruleset version must be semantic.");
   }
   const engineVersion = requiredString(rules, "engineVersion", diagnostics, "ENGINE_VERSION_REQUIRED", path);
-  if (engineVersion !== undefined && engineVersion !== "1.0.0") {
+  if (engineVersion !== undefined && engineVersion !== "2.0.0") {
     addDiagnostic(diagnostics, "ENGINE_VERSION_UNKNOWN", `${path}.engineVersion`, "Engine version is not supported.");
   }
   const claims = requiredArray(rules, "claims", diagnostics, "RULESET_CLAIMS_REQUIRED", path);

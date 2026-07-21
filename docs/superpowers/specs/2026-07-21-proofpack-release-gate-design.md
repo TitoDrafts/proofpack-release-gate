@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-21
 
-**Track:** OpenAI Build Week 2026 — Work and productivity
+**Track:** OpenAI Build Week 2026 — Work and Productivity
 
 **Runtime posture:** Fully local and deterministic; no API key, model call, analytics, external font, CDN asset, or outbound network request
 
@@ -117,7 +117,7 @@ Precedence for a valid claim evaluation:
 5. Complete named inference premises → `INFERRED`.
 6. Otherwise → `NEEDS_CONFIRMATION`.
 
-A gate is positively established when its declared direct supports match or when every declared dependency is `VERIFIED`; a gate with neither a direct-support route nor a dependency route is invalid rather than an unresolvable status.
+A gate is positively established only when every declared direct support matches and every declared dependency is `VERIFIED`. A dependency-only gate may derive from verified dependencies; a gate with neither a direct-support route nor a dependency route is invalid rather than an unresolvable status.
 
 Every claim result contains `status`, stable `reasonCodes`, `ruleId`, `ruleVersion`, sorted `evidenceIds`, sorted `missingPredicates`, `nextAction`, and `stopCondition` where applicable. No numeric confidence or arbitrary trust score is used.
 
@@ -144,6 +144,8 @@ CLI adapter ─┘              → observations → classify claims
 ### Core
 
 The core receives packet data and source text as values. It has no filesystem, DOM, wall-clock, randomness, locale dependency, or network access. It owns schema validation, canonicalization, anchor resolution, observation derivation, status algebra, handoff derivation, public-safety lineage, canonical serialization, SHA-256 receipts, and artifact diffs.
+
+The final breaking identity is packet schema `proofpack.packet/v2`, rules schema `proofpack.rules/v2`, ruleset `2.0.0`, and engine `2.0.0`. Earlier v1 packets are rejected so changed public-field and gate semantics cannot be confused with the published final contract.
 
 The finite selector set is:
 
@@ -338,7 +340,7 @@ The Build Week version has one route, one ruleset, and one primary fixture. It d
 
 **Project name:** ProofPack Release Gate  
 **Descriptor:** The handoff flight recorder for commercial millwork.  
-**Track:** Work and productivity
+**Track:** Work and Productivity
 
 Elevator pitch:
 

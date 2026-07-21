@@ -25,12 +25,13 @@ All listed commits are dated 2026-07-21 in the repository.
 | Task 4: product surface | Codex implemented the single-route release cockpit, raw-source navigation, five-state ledger, replay/reset, causal diff, packet-bound human decision record, and compiled Markdown controls. Independent review drove interaction, stale-state, accessibility, and export-control labeling fixes. | `5c71f29`, `ab05eb8` |
 | Task 5 steps 1–2: submission documentation | Codex audited the actual scripts, source, Git history, and test evidence before writing the README, provenance, exact 2:55 demo, submission draft, and MIT license. | `944e6d1` — `docs: prepare ProofPack Build Week submission` |
 | Task 5 release | Codex directed one synthetic editorial social-card generation, inspected its exact text, resized it to 1200 × 630, bound production metadata, and published the verified build through Sites. | `26f7c7f`, `55287a6` |
+| Final adversarial hardening | A pinned independent release review found public-projection, dependency-gate, and malformed UTF-8 boundaries. Codex reproduced each with a failing regression, implemented the bounded fixes, and ran the complete release gate. | `e80810b` |
 
 ## Material GPT-5.6 Sol specialist contributions
 
 Three focused specialist passes in the primary build thread materially influenced the shipped design:
 
-- **Competition strategy:** challenged a generic evidence-tool position and recommended the concrete commercial-millwork release boundary and Work and productivity framing.
+- **Competition strategy:** challenged a generic evidence-tool position and recommended the concrete commercial-millwork release boundary and Work and Productivity framing.
 - **Product and demo:** shaped the single-screen source → ledger → handoff triptych, the synthetic PL-17/PL-18 conflict, and the bounded append/reset proof moment.
 - **Technical red team:** sharpened exact status meanings, validation failure behavior, canonical receipts, public-safety lineage, no-network verification, and the limits of `VERIFIED` and receipt claims.
 
@@ -75,7 +76,7 @@ The local task reports record these observed transitions:
 On 2026-07-21, after the documentation changes:
 
 - `npm run verify` exited `0`.
-- 139 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests passed.
+- 140 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests passed.
 - lint, typecheck, the production build, CLI demo, and final privacy scan completed successfully.
 - the CLI demo emitted `HOLD` and all five expected statuses.
 - `git diff --check` exited `0` before commit.
