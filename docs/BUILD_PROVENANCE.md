@@ -9,7 +9,7 @@ GPT-5.6 Sol and Codex are build-time collaborators, not runtime dependencies. Th
 - Git history establishes the commits, authorship label, timestamps, and resulting files listed below. It is not a signed attestation of who typed each line.
 - The primary Codex thread is the record of prompts, specialist analyses, implementation coordination, review, and entrant approvals.
 - Task reports under `.superpowers/sdd/` preserve RED/GREEN observations and reviewer outcomes locally; that directory is intentionally ignored by Git.
-- No `/feedback` Session ID is present yet. The entrant must add the real ID returned by the primary thread before submission.
+- The primary build thread returned `/feedback` Session ID `019f813e-8569-7d32-bdbc-cc1b2cf829f7`; the same ID is recorded in the README and submission form.
 
 ## Dated build record
 
@@ -92,6 +92,6 @@ These are local command results, not an external certification. The automated we
 - The allowlisted shareable export is constructed from eligible verified public-lineage outcomes; it is not heuristic scrubbing or automatic PII detection.
 - The privacy scanner checks declared patterns and configured forbidden terms; it cannot establish that arbitrary future input is safe.
 
-## Required feedback record
+## Feedback record
 
-**PRIMARY `/feedback` SESSION ID — REPLACE BEFORE SUBMISSION:** `REPLACE_WITH_PRIMARY_THREAD_FEEDBACK_SESSION_ID`
+**PRIMARY `/feedback` SESSION ID:** `019f813e-8569-7d32-bdbc-cc1b2cf829f7`

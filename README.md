@@ -161,13 +161,13 @@ ProofPack does not make an autonomous fabrication decision. It computes a declar
 - The allowlisted export relies on explicit `PUBLIC`/`RESTRICTED` labels and declared lineage; it is not automatic redaction, anonymity, or PII detection.
 - The receipt is reproducibility evidence, not source authenticity or tamper-proof provenance.
 - Browser clipboard and downloads depend on browser permissions and are not part of the deterministic core guarantee.
-- The public hosted demo, repository, and YouTube video are live; no `/feedback` Session ID or Devpost submission confirmation is claimed in this repository yet.
+- The public hosted demo, repository, and YouTube video are live, and the primary `/feedback` Session ID is recorded below. Devpost submission confirmation is not claimed until the form reports success.
 
-## Required `/feedback` step
+## Primary build-session feedback record
 
-> **REQUIRED BEFORE SUBMISSION — PRIMARY `/feedback` SESSION ID: `REPLACE_WITH_PRIMARY_THREAD_FEEDBACK_SESSION_ID`**
+> **PRIMARY `/feedback` SESSION ID: `019f813e-8569-7d32-bdbc-cc1b2cf829f7`**
 
-Run `/feedback` in the primary Codex build thread, then replace that placeholder here and in the submission form. Do not treat the submission as complete until the repository, hosted demo, public YouTube video, feedback Session ID, and submission confirmation are all present.
+This is the report ID returned by `/feedback` from the primary Codex build thread. Do not treat the submission as complete until Devpost reports a successful submission.
 
 ## License
 

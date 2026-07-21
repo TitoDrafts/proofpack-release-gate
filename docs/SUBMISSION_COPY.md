@@ -1,6 +1,6 @@
-# ProofPack submission copy — entrant draft
+# ProofPack submission reference
 
-> **Entrant instruction:** Rewrite and personalize every narrative section below in your own voice before submission. Replace every labeled placeholder with a real, verified value. Confirm the final wording against the running product and do not submit this file verbatim as if it were already your personal account.
+> This file preserves the verified product facts and release references. The Devpost story uses the entrant's first-person account while retaining these evidence boundaries.
 
 ## Project name
 
@@ -79,12 +79,12 @@ TypeScript 5.9, React 19, vinext/Vite, Node’s test runner through `tsx`, Web C
 - **Repository URL:** https://github.com/TitoDrafts/proofpack-release-gate
 - **Hosted demo URL:** https://proofpack-release-gate.tito943366.chatgpt.site
 - **Public YouTube URL:** https://youtu.be/-Teh4V2mLVs
-- **Primary `/feedback` Session ID — REPLACE BEFORE SUBMISSION:** `REPLACE_WITH_PRIMARY_THREAD_FEEDBACK_SESSION_ID`
+- **Primary `/feedback` Session ID:** `019f813e-8569-7d32-bdbc-cc1b2cf829f7`
 
-## Final entrant checklist
+## Release status
 
-- Rewrite the narrative in your own voice and remove this instruction block.
-- Confirm repository access, hosted demo behavior, and the public YouTube video from a signed-out browser.
-- Run `/feedback` in the primary Codex build thread and paste the real Session ID above and into the submission form.
-- Re-run `npm run verify` after any link or metadata edit.
-- Do not describe the project as submitted until the form reports a successful submission.
+- [x] Entrant-voice Devpost story prepared.
+- [x] Repository access, hosted demo behavior, and public YouTube video verified.
+- [x] Primary `/feedback` Session ID recorded above and prepared for the submission form.
+- [x] `npm run verify` passed after public link and metadata edits.
+- [ ] Capture Devpost's successful-submission confirmation before describing the project as submitted.
