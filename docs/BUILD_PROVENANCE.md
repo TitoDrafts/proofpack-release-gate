@@ -4,6 +4,8 @@ This record describes how GPT-5.6 Sol, Codex, independent review agents, and the
 
 GPT-5.6 Sol and Codex are build-time collaborators, not runtime dependencies. The shipped compiler makes no model call and requires no API credential.
 
+Devpost displayed `Project submitted!` for [ProofPack Release Gate](https://devpost.com/software/proofpack-release-gate) on 2026-07-21, and the public page showed `Submitted to OpenAI Build Week`.
+
 ## Evidence boundary
 
 - Git history establishes the commits, authorship label, timestamps, and resulting files listed below. It is not a signed attestation of who typed each line.

@@ -8,6 +8,7 @@ ProofPack is not trying to “magically understand any document”; it demonstra
 
 Submission media:
 
+- **Devpost submission:** [devpost.com/software/proofpack-release-gate](https://devpost.com/software/proofpack-release-gate)
 - **Hosted demo:** [proofpack-release-gate.tito943366.chatgpt.site](https://proofpack-release-gate.tito943366.chatgpt.site)
 - **Three-minute video:** [youtu.be/-Teh4V2mLVs](https://youtu.be/-Teh4V2mLVs)
 - **Product image:** [1200 × 630 release card](https://proofpack-release-gate.tito943366.chatgpt.site/og.png)
@@ -161,13 +162,13 @@ ProofPack does not make an autonomous fabrication decision. It computes a declar
 - The allowlisted export relies on explicit `PUBLIC`/`RESTRICTED` labels and declared lineage; it is not automatic redaction, anonymity, or PII detection.
 - The receipt is reproducibility evidence, not source authenticity or tamper-proof provenance.
 - Browser clipboard and downloads depend on browser permissions and are not part of the deterministic core guarantee.
-- The public hosted demo, repository, and YouTube video are live, and the primary `/feedback` Session ID is recorded below. Devpost submission confirmation is not claimed until the form reports success.
+- The public hosted demo, repository, YouTube video, and Devpost project page are live, and the primary `/feedback` Session ID is recorded below. Devpost reported `Project submitted!` on 2026-07-21.
 
 ## Primary build-session feedback record
 
 > **PRIMARY `/feedback` SESSION ID: `019f813e-8569-7d32-bdbc-cc1b2cf829f7`**
 
-This is the report ID returned by `/feedback` from the primary Codex build thread. Do not treat the submission as complete until Devpost reports a successful submission.
+This is the report ID returned by `/feedback` from the primary Codex build thread. Devpost displayed `Project submitted!` and the public project page showed `Submitted to OpenAI Build Week` on 2026-07-21.
 
 ## License
 
