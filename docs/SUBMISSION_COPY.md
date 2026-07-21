@@ -58,7 +58,7 @@ The entrant retained the domain choice, synthetic-only boundary, model-free runt
 - Every claim result carries a status, reason code, ruleset version, evidence IDs, missing predicates, and next action; resolved observations carry exact locators and excerpts, while stop conditions appear only where declared.
 - A causal replay diff in which only `finish-coordinated` and `rfi-incorporated` change, while the sample gate keeps release blocked.
 - Reproducibility/integrity receipts plus internal and allowlisted shareable Markdown artifacts.
-- A complete local verification gate. The fresh 2026-07-21 Task 5 run passed 133 TypeScript tests, 21 privacy-scanner tests, and 2 rendered-product tests, plus lint, typecheck, production build, CLI demo, and privacy scan.
+- A complete local verification gate. The fresh 2026-07-21 final release run passed 133 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests, plus lint, typecheck, production build, CLI demo, and privacy scan.
 
 ## Lessons learned
 
@@ -77,7 +77,7 @@ TypeScript 5.9, React 19, vinext/Vite, Node’s test runner through `tsx`, Web C
 ## Required links and identifiers
 
 - **Repository URL — REPLACE BEFORE SUBMISSION:** `REPLACE_WITH_PUBLIC_REPOSITORY_URL`
-- **Hosted demo URL — REPLACE BEFORE SUBMISSION:** `REPLACE_WITH_HOSTED_DEMO_URL`
+- **Hosted demo URL:** https://proofpack-release-gate.tito943366.chatgpt.site
 - **Public YouTube URL — REPLACE BEFORE SUBMISSION:** `REPLACE_WITH_PUBLIC_YOUTUBE_URL`
 - **Primary `/feedback` Session ID — REPLACE BEFORE SUBMISSION:** `REPLACE_WITH_PRIMARY_THREAD_FEEDBACK_SESSION_ID`
 

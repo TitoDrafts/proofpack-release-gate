@@ -85,6 +85,23 @@ test("server-renders the complete ProofPack product frame before client compilat
   assert.doesNotMatch(html, forbiddenProductText);
 });
 
+test("publishes canonical social metadata for the verified production release", async () => {
+  const response = await render();
+  const html = await response.text();
+  const productionUrl = "https://proofpack-release-gate.tito943366.chatgpt.site/";
+  const socialImageUrl = `${productionUrl}og.png`;
+
+  assert.match(html, new RegExp(`<link[^>]+rel=["']canonical["'][^>]+href=["']${productionUrl}["']`, "i"));
+  assert.match(html, /<meta[^>]+property=["']og:title["'][^>]+content=["']ProofPack Release Gate["']/i);
+  assert.match(html, new RegExp(`<meta[^>]+property=["']og:image["'][^>]+content=["']${socialImageUrl}["']`, "i"));
+  assert.match(html, /<meta[^>]+name=["']twitter:card["'][^>]+content=["']summary_large_image["']/i);
+
+  const png = await readFile(new URL("../public/og.png", import.meta.url));
+  assert.equal(png.subarray(1, 4).toString("ascii"), "PNG");
+  assert.equal(png.readUInt32BE(16), 1200);
+  assert.equal(png.readUInt32BE(20), 630);
+});
+
 test("ships no starter package, remote service, font, analytics, or image asset", async () => {
   const sources = await Promise.all(
     appSources.map((sourcePath) => readFile(new URL(`../${sourcePath}`, import.meta.url), "utf8")),

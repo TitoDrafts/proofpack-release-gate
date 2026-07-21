@@ -8,9 +8,9 @@ ProofPack is not trying to “magically understand any document”; it demonstra
 
 Submission media:
 
-- **Hosted demo:** `REPLACE_BEFORE_SUBMISSION_WITH_HOSTED_DEMO_URL`
+- **Hosted demo:** [proofpack-release-gate.tito943366.chatgpt.site](https://proofpack-release-gate.tito943366.chatgpt.site)
 - **Three-minute video:** `REPLACE_BEFORE_SUBMISSION_WITH_PUBLIC_YOUTUBE_URL`
-- **Product screenshot:** `REPLACE_BEFORE_SUBMISSION_WITH_SCREENSHOT_OR_IMAGE_URL`
+- **Product image:** [1200 × 630 release card](https://proofpack-release-gate.tito943366.chatgpt.site/og.png)
 
 ## Judge quickstart: one-command CLI demo
 
@@ -111,7 +111,7 @@ The complete local gate is:
 npm run verify
 ```
 
-It runs lint, typecheck, TypeScript and privacy-scanner tests, a production build, rendered-product tests, the CLI demo, and the repository/generated-artifact privacy scan. The fresh Task 5 run on 2026-07-21 passed 133 TypeScript tests, 21 privacy-scanner tests, and 2 rendered-product tests; the build, CLI demo, and final privacy scan also exited successfully.
+It runs lint, typecheck, TypeScript and privacy-scanner tests, a production build, rendered-product tests, the CLI demo, and the repository/generated-artifact privacy scan. The fresh final release run on 2026-07-21 passed 133 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests; the build, CLI demo, and final privacy scan also exited successfully.
 
 Useful focused commands:
 
@@ -156,7 +156,7 @@ ProofPack does not make an autonomous fabrication decision. It computes a declar
 - The allowlisted export relies on explicit `PUBLIC`/`RESTRICTED` labels and declared lineage; it is not automatic redaction, anonymity, or PII detection.
 - The receipt is reproducibility evidence, not source authenticity or tamper-proof provenance.
 - Browser clipboard and downloads depend on browser permissions and still need the final hands-on recording pass noted above.
-- No hosted demo, public repository URL, YouTube URL, `/feedback` Session ID, or submission confirmation is claimed in this repository yet.
+- The public hosted demo is live; no public repository URL, YouTube URL, `/feedback` Session ID, or submission confirmation is claimed in this repository yet.
 
 ## Required `/feedback` step
 
