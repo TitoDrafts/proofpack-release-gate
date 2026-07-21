@@ -16,7 +16,9 @@ Work and Productivity
 
 ## Problem
 
-A fabrication handoff can look complete while its evidence is split across a finish schedule, approved RFI, active traveler, field check, sample register, and release note. A small contradiction or missing acknowledgement can survive until physical work begins. A summary alone is not enough: the person releasing work needs to see which source supports each claim, which rule classified it, what remains unresolved, and the next safe action.
+In the entrant's day-to-day drafting work, a millwork shop often supplies both its proposal and the architectural set. The millwork is drawn to the proposal because that is what the shop estimated and charged for, but the architect has the final say and the signed-off architectural set is usually what must actually be fabricated. When those sources contradict each other, a PM or estimator coordination error can send the drawings in the wrong direction.
+
+That lived coordination problem is the reason for ProofPack: make the contradiction visible, show which source supports each claim, and stop the handoff before a drafting mismatch becomes physical shop work.
 
 ## What it does
 
@@ -61,6 +63,8 @@ The entrant retained the domain choice, synthetic-only boundary, model-free runt
 - A complete local verification gate. The fresh 2026-07-21 final release run passed 140 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests, plus lint, typecheck, production build, CLI demo, and privacy scan.
 
 ## Lessons learned
+
+The entrant was surprised by how quickly the product came together, how strong the result became in a short build, and how clear the AI voiceover sounded in the final video. More personally, the entrant is proud to be learning AI while managing a business and already implementing it in day-to-day work.
 
 AI-assisted development does not require an AI-dependent runtime. In this project, GPT-5.6 Sol and Codex helped turn domain judgment into a constrained, inspectable compiler, while the shipped behavior stayed deterministic and reviewable.
 

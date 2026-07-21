@@ -63,6 +63,8 @@ The entrant retained and approved:
 - the rule that a human acknowledgement or exception request cannot alter evidence classifications or clear a blocker;
 - the final product positioning, scope exclusions, demo story, and approval of the documented build artifact.
 
+Before the deadline, the entrant supplied first-person context for the final Devpost story: shops often provide a priced proposal alongside an architectural set; drafting follows the priced scope, while the architect's signed-off set ultimately governs fabrication; PM or estimator contradictions can therefore send the drawings in the wrong direction. The entrant also added a personal reaction to the speed and quality of the build, the clarity of the AI voiceover, and pride in learning and applying AI while managing a business.
+
 ## Test-first and review evidence
 
 The local task reports record these observed transitions:
