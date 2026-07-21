@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { SkeletonPreview } from "./_sites-preview/SkeletonPreview";
 
 export const metadata: Metadata = {
   title: "Your site is taking shape",
@@ -11,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <SkeletonPreview />;
+  return null;
 }

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "proofpack.packet/v1",
+  "packetId": "project-alder-aw-214",
+  "title": "Project Alder · Reception Desk AW-214",
+  "asOf": "2026-07-21T05:00:00.000Z",
+  "rulesFile": "release-rules.json",
+  "sources": [
+    {
+      "id": "handoff-draft",
+      "file": "handoff-draft.md",
+      "mediaType": "text/markdown",
+      "capturedAt": "2026-07-21T02:55:00.000Z",
+      "safety": "RESTRICTED"
+    },
+    {
+      "id": "finish-schedule",
+      "file": "finish-schedule.md",
+      "mediaType": "text/markdown",
+      "capturedAt": "2026-07-21T03:00:00.000Z",
+      "safety": "RESTRICTED"
+    },
+    {
+      "id": "rfi-042",
+      "file": "rfi-042.json",
+      "mediaType": "application/json",
+      "capturedAt": "2026-07-21T03:10:00.000Z",
+      "safety": "RESTRICTED"
+    },
+    {
+      "id": "shop-notes",
+      "file": "shop-notes.log",
+      "mediaType": "text/plain",
+      "capturedAt": "2026-07-21T03:25:00.000Z",
+      "safety": "RESTRICTED"
+    },
+    {
+      "id": "field-check",
+      "file": "field-check.json",
+      "mediaType": "application/json",
+      "capturedAt": "2026-07-21T03:40:00.000Z",
+      "safety": "PUBLIC"
+    },
+    {
+      "id": "sample-register",
+      "file": "sample-register.json",
+      "mediaType": "application/json",
+      "capturedAt": "2026-07-21T03:45:00.000Z",
+      "safety": "RESTRICTED"
+    },
+    {
+      "id": "incoming-receipts",
+      "file": "incoming-receipts.log",
+      "mediaType": "text/plain",
+      "capturedAt": "2026-07-21T04:00:00.000Z",
+      "safety": "RESTRICTED"
+    }
+  ]
+}

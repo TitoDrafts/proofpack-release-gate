@@ -1,0 +1,199 @@
+{
+  "schemaVersion": "proofpack.rules/v1",
+  "rulesetId": "millwork-release",
+  "rulesetVersion": "1.0.0",
+  "engineVersion": "1.0.0",
+  "claims": [
+    {
+      "id": "fabrication-release",
+      "title": "AW-214 is clear for fabrication release",
+      "publicTitle": "Fabrication release prerequisites are complete",
+      "kind": "gate",
+      "critical": true,
+      "anchors": [
+        {
+          "id": "draft-ready-to-fabricate",
+          "sourceId": "handoff-draft",
+          "selector": {
+            "kind": "line",
+            "contains": "Fabrication status: READY TO FABRICATE"
+          },
+          "effect": "SUPPORT",
+          "strength": "CONTEXT",
+          "safety": "RESTRICTED"
+        },
+        {
+          "id": "sample-pl18-pending",
+          "sourceId": "sample-register",
+          "selector": {
+            "kind": "json",
+            "pointer": "/sample/status",
+            "equals": "PENDING"
+          },
+          "effect": "BLOCK",
+          "strength": "DIRECT",
+          "safety": "RESTRICTED"
+        }
+      ],
+      "requiresVerified": [
+        "field-dimensions-current",
+        "rfi-incorporated",
+        "finish-coordinated"
+      ],
+      "nextAction": "Issue traveler Rev C citing RFI-042 and attach PL-18 sample approval.",
+      "stopCondition": "Do not issue a cut ticket.",
+      "publicEligibleWhenVerified": false
+    },
+    {
+      "id": "field-dimensions-current",
+      "title": "Current field dimensions are verified",
+      "publicTitle": "Current field dimensions are verified",
+      "kind": "direct",
+      "critical": true,
+      "anchors": [
+        {
+          "id": "field-dimensions-verified",
+          "sourceId": "field-check",
+          "selector": {
+            "kind": "json",
+            "pointer": "/dimensions/status",
+            "equals": "VERIFIED"
+          },
+          "effect": "SUPPORT",
+          "strength": "DIRECT",
+          "safety": "PUBLIC"
+        }
+      ],
+      "nextAction": "Use the verified field dimensions for fabrication planning.",
+      "publicEligibleWhenVerified": true
+    },
+    {
+      "id": "finish-coordinated",
+      "title": "The packet establishes one coordinated finish basis",
+      "publicTitle": "The finish basis is coordinated",
+      "kind": "exclusive",
+      "critical": true,
+      "anchors": [
+        {
+          "id": "finish-schedule-pl17",
+          "sourceId": "finish-schedule",
+          "selector": {
+            "kind": "line",
+            "contains": "Exposed faces: PL-17 Natural Oak"
+          },
+          "effect": "ASSERT_VALUE",
+          "strength": "DIRECT",
+          "value": "PL-17",
+          "safety": "RESTRICTED"
+        },
+        {
+          "id": "rfi-042-pl18",
+          "sourceId": "rfi-042",
+          "selector": {
+            "kind": "json",
+            "pointer": "/response/finish",
+            "equals": "PL-18 Smoked Walnut"
+          },
+          "effect": "ASSERT_VALUE",
+          "strength": "DIRECT",
+          "value": "PL-18",
+          "safety": "RESTRICTED"
+        },
+        {
+          "id": "finish-resolver-traveler-ack",
+          "sourceId": "incoming-receipts",
+          "selector": {
+            "kind": "log",
+            "event": "traveler_ack",
+            "fields": {
+              "rfi": "RFI-042",
+              "rev": "C",
+              "finish": "PL-18",
+              "cut_started": false
+            }
+          },
+          "effect": "ASSERT_VALUE",
+          "strength": "DIRECT",
+          "value": "PL-18",
+          "safety": "RESTRICTED"
+        }
+      ],
+      "authorityResolverAnchorId": "finish-resolver-traveler-ack",
+      "nextAction": "Coordinate one finish basis and record it on the current traveler.",
+      "stopCondition": "Do not release fabrication while PL-17 and PL-18 remain active.",
+      "publicEligibleWhenVerified": false
+    },
+    {
+      "id": "rfi-incorporated",
+      "title": "RFI-042 is incorporated into the current traveler",
+      "publicTitle": "The approved finish direction is incorporated",
+      "kind": "direct",
+      "critical": true,
+      "anchors": [
+        {
+          "id": "rfi-042-approved",
+          "sourceId": "rfi-042",
+          "selector": {
+            "kind": "json",
+            "pointer": "/status",
+            "equals": "APPROVED"
+          },
+          "effect": "SUPPORT",
+          "strength": "CONTEXT",
+          "safety": "RESTRICTED"
+        },
+        {
+          "id": "rfi-042-traveler-ack",
+          "sourceId": "incoming-receipts",
+          "selector": {
+            "kind": "log",
+            "event": "traveler_ack",
+            "fields": {
+              "rfi": "RFI-042",
+              "rev": "C",
+              "finish": "PL-18",
+              "cut_started": false
+            }
+          },
+          "effect": "SUPPORT",
+          "strength": "DIRECT",
+          "safety": "RESTRICTED"
+        }
+      ],
+      "nextAction": "Issue traveler Rev C citing RFI-042.",
+      "stopCondition": "Do not release fabrication until the current traveler acknowledges RFI-042.",
+      "publicEligibleWhenVerified": false
+    },
+    {
+      "id": "traveler-current-finish",
+      "title": "The active traveler likely still uses PL-17",
+      "publicTitle": "The active traveler finish is identified",
+      "kind": "inference",
+      "critical": false,
+      "anchors": [
+        {
+          "id": "traveler-rev-b-pl17-active",
+          "sourceId": "shop-notes",
+          "selector": {
+            "kind": "log",
+            "event": "traveler_state",
+            "fields": {
+              "assembly": "AW-214",
+              "rev": "B",
+              "finish": "PL-17",
+              "active": true,
+              "stock_staged": true,
+              "rfi_ack": false
+            }
+          },
+          "effect": "SUPPORT",
+          "strength": "CORROBORATING",
+          "value": "PL-17",
+          "safety": "RESTRICTED"
+        }
+      ],
+      "nextAction": "Confirm the active traveler finish against RFI-042.",
+      "publicEligibleWhenVerified": false
+    }
+  ]
+}
