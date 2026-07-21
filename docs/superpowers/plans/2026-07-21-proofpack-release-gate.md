@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Runtime is fully local and deterministic: no OpenAI API key, model call, analytics, external font, CDN asset, or outbound network request.
+- In the web app, compilation and replay are browser-local; the CLI runs the same deterministic core locally. The core has no OpenAI API key requirement, model call, or outbound API request, and the web app ships no analytics SDK, remote font, or remote third-party asset dependency.
 - Every repository fixture, screenshot, example, and export is fictional and synthetic; no client files, names, drawings, email, paths, identifiers, screenshots, or proprietary shop data.
 - Product has one route, one ruleset, and one polished synthetic scenario: Northstar Millworks Lab / Project Alder / Reception Desk AW-214.
 - The core performs no filesystem, DOM, wall-clock, randomness, locale-sensitive formatting, or network access.

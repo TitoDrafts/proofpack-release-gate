@@ -6,9 +6,9 @@
 
 ProofPack Release Gate
 
-## Elevator pitch — 188 characters
+## Elevator pitch — 175 characters
 
-ProofPack compiles synthetic millwork handoff files into evidence-linked release gates, exact next actions, and reproducibility receipts—locally, deterministically, and without an API key.
+ProofPack compiles synthetic millwork handoff files into evidence-linked release gates, rule-derived next actions, and reproducibility receipts—locally and without an API key.
 
 ## Track
 
@@ -34,7 +34,7 @@ The rule grammar is intentionally narrow: exact text-line contains checks, prede
 
 Canonical, unkeyed SHA-256 digests record the semantic input, observations, ledger, handoff, and typed shareable projection. They support reproducible comparison; they do not hash untouched source bytes or rendered exports, and they are not a signature, source-authenticity proof, or tamper-proof provenance system.
 
-The Build Week runtime has no LLM call, API key requirement, analytics, remote font, CDN asset, or application-authored outbound service/API request. The checked-in scenario is entirely synthetic and contains no client material. A fresh dependency install can still contact the npm registry, and a hosted page uses HTTP to load its own app assets.
+In the web app, compilation and replay run browser-locally; the CLI runs the same deterministic core locally. The core makes no model or outbound API call, and the web app ships no analytics SDK, remote font, or remote third-party asset dependency. No OpenAI API key is required, and the checked-in scenario is entirely synthetic. A fresh dependency install can still contact the npm registry; a hosted page uses network requests and HTTPS to load its own assets and can inherit hosting-provider behavior.
 
 ## How Codex and GPT-5.6 were used
 

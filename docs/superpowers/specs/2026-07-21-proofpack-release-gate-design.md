@@ -4,7 +4,7 @@
 
 **Track:** OpenAI Build Week 2026 — Work and Productivity
 
-**Runtime posture:** Fully local and deterministic; no API key, model call, analytics, external font, CDN asset, or outbound network request
+**Runtime posture:** In the web app, compilation and replay are browser-local; the CLI runs the same deterministic core locally. The core has no API key, model call, or outbound API request, and the web app ships no analytics SDK, remote font, or remote third-party asset dependency
 
 **Data posture:** Synthetic fixtures only; no client files, names, drawings, email, paths, identifiers, screenshots, or proprietary shop data
 
@@ -344,6 +344,6 @@ The Build Week version has one route, one ruleset, and one primary fixture. It d
 
 Elevator pitch:
 
-> ProofPack compiles synthetic millwork handoff files into evidence-linked release gates, exact next actions, and reproducible receipts—locally, deterministically, and without an API key.
+> ProofPack compiles synthetic millwork handoff files into evidence-linked release gates, rule-derived next actions, and reproducible receipts—locally and without an API key.
 
 The submission must avoid invented ROI, universal truth, authenticity, security, privacy, and tamper-proof claims. It should emphasize a credible practitioner problem, a visibly falsifiable compiler, a complete product experience, a one-command judge path, and the documented way GPT-5.6 Sol and Codex turned operator judgment into tested software.

@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Runtime is fully local and deterministic: no model call, analytics, external font, CDN asset, or outbound network request.
+- In the web app, compilation and replay are browser-local; the CLI runs the same deterministic core locally. The core has no model call or outbound API request, and the web app ships no analytics SDK, remote font, or remote third-party asset dependency.
 - Every repository fixture, example, and export is fictional and synthetic.
 - The core performs no filesystem, DOM, wall-clock, randomness, locale-sensitive formatting, or network access.
 - Shareable Markdown is rendered only from the typed allowlist projection, never by scrubbing operator Markdown.
