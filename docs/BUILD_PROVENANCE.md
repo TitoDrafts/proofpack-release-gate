@@ -26,6 +26,7 @@ All listed commits are dated 2026-07-21 in the repository.
 | Task 5 steps 1–2: submission documentation | Codex audited the actual scripts, source, Git history, and test evidence before writing the README, provenance, exact 2:55 demo, submission draft, and MIT license. | `944e6d1` — `docs: prepare ProofPack Build Week submission` |
 | Task 5 release | Codex directed one synthetic editorial social-card generation, inspected its exact text, resized it to 1200 × 630, bound production metadata, and published the verified build through Sites. | `26f7c7f`, `55287a6` |
 | Final adversarial hardening | A pinned independent release review found public-projection, dependency-gate, and malformed UTF-8 boundaries. Codex reproduced each with a failing regression, implemented the bounded fixes, and ran the complete release gate. | `e80810b` |
+| Release-gate safety follow-up | A second pinned probe proved that non-pending sample states could clear the fabrication gate. Codex added explicit `APPROVED` support, explicit `REJECTED` blocking, missing-evidence hold coverage, and new packet/rules/engine identities before re-running the release gate. | `8ff67bc` |
 
 ## Material GPT-5.6 Sol specialist contributions
 

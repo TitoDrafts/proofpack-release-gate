@@ -142,7 +142,7 @@ GPT-5.6 Sol and Codex contributed during development only:
 | Evidence compiler | Codex implemented canonicalization, exact anchors, status algebra, and deterministic handoff behavior; review added selector and resolver boundary cases. | `0fee4cf`, `a987bef` |
 | Artifacts, receipt, CLI, and privacy gate | Codex implemented typed allowlist export, stage digests, causal diff, atomic CLI publication, and the repository privacy scanner; repeated review closed verification and credential-detection gaps. | `5c518c5`, `509cf13`, `d724219` |
 | Product interface | Codex implemented the single-screen triptych, bounded replay/reset, evidence navigation, non-overriding human record, and artifact controls, followed by independent review and an accessible-control labeling fix. | `5c71f29`, `ab05eb8` |
-| Final adversarial hardening | A pinned independent release review found and Codex closed public-projection, gate-grammar, and malformed UTF-8 boundaries with failing regressions before implementation. | `e80810b` |
+| Final adversarial hardening | Pinned independent release reviews found and Codex closed public-projection, gate-grammar, malformed UTF-8, explicit sample-approval, and version-identity boundaries with failing regressions before implementation. | `e80810b`, `8ff67bc` |
 
 The detailed, evidence-bounded record is in [docs/BUILD_PROVENANCE.md](docs/BUILD_PROVENANCE.md). Git commits show the resulting artifacts; the primary Codex thread is the source record for the human/model interaction.
 
