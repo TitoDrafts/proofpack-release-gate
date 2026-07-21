@@ -86,7 +86,7 @@ TypeScript 5.9, React 19, vinext/Vite, Node’s test runner through `tsx`, Web C
 - **Repository URL:** https://github.com/TitoDrafts/proofpack-release-gate
 - **Devpost submission URL:** https://devpost.com/software/proofpack-release-gate
 - **Hosted demo URL:** https://proofpack-release-gate.tito943366.chatgpt.site
-- **Public YouTube URL:** https://youtu.be/-Teh4V2mLVs
+- **Public YouTube URL:** https://youtu.be/4BB6HDbarMw
 - **Primary `/feedback` Session ID:** `019f813e-8569-7d32-bdbc-cc1b2cf829f7`
 
 ## Release status

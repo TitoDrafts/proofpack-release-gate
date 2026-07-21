@@ -10,7 +10,7 @@ Submission media:
 
 - **Devpost submission:** [devpost.com/software/proofpack-release-gate](https://devpost.com/software/proofpack-release-gate)
 - **Hosted demo:** [proofpack-release-gate.tito943366.chatgpt.site](https://proofpack-release-gate.tito943366.chatgpt.site)
-- **Three-minute video:** [youtu.be/-Teh4V2mLVs](https://youtu.be/-Teh4V2mLVs)
+- **Three-minute video:** [youtu.be/4BB6HDbarMw](https://youtu.be/4BB6HDbarMw)
 - **Product image:** [1200 × 630 release card](https://proofpack-release-gate.tito943366.chatgpt.site/og.png)
 
 ## Judge quickstart: local CLI demo
@@ -71,7 +71,7 @@ The command fails closed if ChatGPT authentication is absent, the pinned CLI/mod
 | `2:30–2:48` | Show `npm run ai:propose`, then a fresh `npm run verify` result. | GPT-5.6 Sol is an actual optional proposal mode; the local deterministic compiler remains the sole release authority and default runtime. |
 | `2:48–2:55` | Return to the `HOLD` card and close. | “If the evidence disagrees, release stops—or the exception stays visible.” |
 
-The updated live walkthrough is in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md). The final public video link will be updated only after the new sub-three-minute upload is verified.
+The final 2:54 walkthrough is in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md). It shows the active GPT-5.6 proposal path, deterministic admission/rejection, causal recompilation, reset, human `HOLD`, and fresh verification. The validated upload master has SHA-256 `90f7eb678e3499edaaf34f033eec179075ada49ba0178d4071804569bfe6c6cb`.
 
 ## Synthetic data, no client data
 
@@ -157,7 +157,7 @@ GPT-5.6 Sol and Codex contributed during development, and GPT-5.6 Sol also power
 | Artifacts, receipt, CLI, and privacy gate | Codex implemented typed allowlist export, stage digests, causal diff, atomic CLI publication, and the repository privacy scanner; repeated review closed verification and credential-detection gaps. | `5c518c5`, `509cf13`, `d724219` |
 | Product interface | Codex implemented the single-screen triptych, bounded replay/reset, evidence navigation, non-overriding human record, and artifact controls, followed by independent review and an accessible-control labeling fix. | `5c71f29`, `ab05eb8` |
 | Final adversarial hardening | Pinned independent release reviews found and Codex closed public-projection, gate-grammar, malformed UTF-8, explicit sample-approval, and version-identity boundaries with failing regressions before implementation. | `e80810b`, `8ff67bc` |
-| GPT-5.6 Proposal Gate | A real pinned `gpt-5.6-sol` Codex run proposed three bindings from synthetic evidence. The deterministic reviewer admitted two exact traveler bindings, rejected informal sample authority, preserved source-line lineage, and kept the release on `HOLD`. | `dcd6e65`, final release commit |
+| GPT-5.6 Proposal Gate | A real pinned `gpt-5.6-sol` Codex run proposed three bindings from synthetic evidence. The deterministic reviewer admitted two exact traveler bindings, rejected informal sample authority, preserved source-line lineage, and kept the release on `HOLD`. | `dcd6e65`, `b265688` |
 
 The detailed, evidence-bounded record is in [docs/BUILD_PROVENANCE.md](docs/BUILD_PROVENANCE.md). Git commits show the resulting artifacts; the primary Codex thread is the source record for the human/model interaction.
 
