@@ -6,15 +6,17 @@
 
 ProofPack Release Gate
 
-## Elevator pitch — 175 characters
+## Elevator pitch
 
-GPT-5.6 proposes evidence bindings; ProofPack deterministically admits or rejects them, then compiles a local, evidence-linked millwork release gate.
+GPT-5.6 proposes. ProofPack proves—or rejects. Contradictory documents stay on HOLD instead of becoming fabricated mistakes.
 
 ## Track
 
 Work and Productivity
 
 ## Problem
+
+ProofPack is a pattern for any AI-era handoff where evidence must outrank confidence: AI proposes candidate bindings, deterministic rules judge admissibility, and humans keep release authority. Millwork fabrication is the proving ground because the entrant has watched document contradictions become expensive physical mistakes.
 
 In the entrant's day-to-day drafting work, a millwork shop often supplies both its proposal and the architectural set. The millwork is drawn to the proposal because that is what the shop estimated and charged for, but the architect has the final say and the signed-off architectural set is usually what must actually be fabricated. When those sources contradict each other, a PM or estimator coordination error can send the drawings in the wrong direction.
 
@@ -88,6 +90,9 @@ TypeScript 5.9, React 19, vinext/Vite, Node’s test runner through `tsx`, Web C
 - **Hosted demo URL:** https://proofpack-release-gate.tito943366.chatgpt.site
 - **Public YouTube URL:** https://youtu.be/4BB6HDbarMw
 - **Primary `/feedback` Session ID:** `019f813e-8569-7d32-bdbc-cc1b2cf829f7`
+- **90-second judge path:** https://github.com/TitoDrafts/proofpack-release-gate/blob/main/JUDGES.md
+- **General pattern:** https://github.com/TitoDrafts/proofpack-release-gate/blob/main/PATTERN.md
+- **Submission receipt:** https://github.com/TitoDrafts/proofpack-release-gate/blob/main/docs/SUBMISSION_RECEIPT.md
 
 ## Release status
 

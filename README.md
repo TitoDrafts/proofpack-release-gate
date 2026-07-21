@@ -1,6 +1,10 @@
 # ProofPack Release Gate
 
-ProofPack is a local, deterministic preflight for commercial-millwork handoffs. It compiles a bounded packet into exact source and rule traces, five transparent claim states, a `HOLD` or `READY` fabrication handoff, Markdown artifacts, and a SHA-256 reproducibility/integrity receipt.
+**GPT-5.6 proposes. ProofPack proves—or rejects. Contradictory documents stay on `HOLD` instead of becoming fabricated mistakes.**
+
+ProofPack is a pattern for any AI-era handoff where evidence must outrank confidence: AI proposes candidate bindings, deterministic rules judge admissibility, and humans keep release authority. Millwork fabrication is the proving ground because document contradictions can become expensive physical work.
+
+The submitted app is a local, deterministic preflight for commercial-millwork handoffs. It compiles a bounded packet into exact source and rule traces, five transparent claim states, a `HOLD` or `READY` fabrication handoff, Markdown artifacts, and a SHA-256 reproducibility/integrity receipt.
 
 The bundled Project Alder packet deliberately lands on `HOLD`: its finish sources disagree, its current traveler has not acknowledged the approved RFI, and its required finish sample is still pending. A recorded, schema-bound GPT-5.6 Sol proposal is reviewed locally: two exact traveler bindings are admitted, while an estimator's informal sample approval is rejected as `UNAUTHORIZED_AUTHORITY`. Applying the admitted bindings changes only the two causal claims; the independent sample blocker keeps the release on `HOLD`.
 
@@ -8,12 +12,34 @@ ProofPack is not trying to “magically understand any document”; it demonstra
 
 Submission media:
 
+- **90-second judge path:** [JUDGES.md](JUDGES.md)
+- **General pattern:** [PATTERN.md](PATTERN.md)
 - **Devpost submission:** [devpost.com/software/proofpack-release-gate](https://devpost.com/software/proofpack-release-gate)
 - **Hosted demo:** [proofpack-release-gate.tito943366.chatgpt.site](https://proofpack-release-gate.tito943366.chatgpt.site)
 - **Three-minute video:** [youtu.be/4BB6HDbarMw](https://youtu.be/4BB6HDbarMw)
 - **Product image:** [1200 × 630 release card](https://proofpack-release-gate.tito943366.chatgpt.site/og.png)
 
-## Judge quickstart: local CLI demo
+Submission receipt:
+
+<!-- proofpack-receipt:start -->
+`64c8ad55a4e9cdc223b09b5a68a730b4e5e16903a60699029786195bc3316f38`
+<!-- proofpack-receipt:end -->
+
+Recompute it with `npm run receipt:submission`; read the exact scope and self-reference normalization in [docs/SUBMISSION_RECEIPT.md](docs/SUBMISSION_RECEIPT.md). This submission ships with its own receipt because evidence lineage is the point.
+
+Technical proof map:
+
+| Judge-visible claim | Implementation | Regression evidence |
+| --- | --- | --- |
+| GPT-5.6 cannot set status or release | [`proposal.ts`](src/proofpack/proposal.ts) plus the closed [proposal schema](schemas/proofpack-proposal.schema.json) | [`proposal.test.ts`](tests/proposal.test.ts) |
+| Exact anchors drive five transparent states | [`extract.ts`](src/proofpack/extract.ts), [`classify.ts`](src/proofpack/classify.ts), [`compile.ts`](src/proofpack/compile.ts) | [`compile.test.ts`](tests/compile.test.ts), [`classify.test.ts`](tests/classify.test.ts) |
+| Two admitted bindings change only two claims | [`diff.ts`](src/proofpack/diff.ts), [`proposal.ts`](src/proofpack/proposal.ts) | [`proposal.test.ts`](tests/proposal.test.ts), [`ui-logic.test.ts`](tests/ui-logic.test.ts) |
+| Public output is a typed allowlist projection | [`safety.ts`](src/proofpack/safety.ts) | [`safety.test.ts`](tests/safety.test.ts), [`privacy-scan.test.mjs`](tests/privacy-scan.test.mjs) |
+| Identical normalized input reproduces the receipt | [`canonical.ts`](src/proofpack/canonical.ts), [`receipt.ts`](src/proofpack/receipt.ts) | [`receipt-diff.test.ts`](tests/receipt-diff.test.ts), [`no-network.test.ts`](tests/no-network.test.ts) |
+
+## Judge quickstart: 90-second web path, then local CLI
+
+Follow [JUDGES.md](JUDGES.md) first: **Review proposal → inspect one authority rejection → apply two bindings → verify exactly two claims change → confirm the independent blocker keeps `HOLD` → reset the fingerprint.** No API key, account, or runtime network connection is required for the local path after `npm ci`.
 
 Prerequisite: Node.js `>=22.13.0` and npm. The most recent repository verification used Node.js `v24.15.0` and npm `11.12.1` on Windows.
 
@@ -33,7 +59,7 @@ NEEDS_CONFIRMATION rfi-incorporated
 INFERRED traveler-current-finish
 ```
 
-`npm ci` may contact the npm registry on a fresh machine. After dependencies are installed, the default ProofPack compiler, CLI demo, tests, and web application require no API key, Codex login, or model call. Application code sends no outbound service, analytics, model, or API request; a hosted page still uses HTTP to load its own app assets.
+`npm ci` may contact the npm registry on a fresh machine. After dependencies are installed, the default ProofPack compiler, CLI demo, tests, challenge, and web application require **no API key, no account, and no runtime network connection**. Application code sends no outbound service, analytics, model, or API request; a hosted page still uses HTTP to load its own app assets.
 
 ## Web quickstart
 
@@ -72,6 +98,10 @@ The command fails closed if ChatGPT authentication is absent, the pinned CLI/mod
 | `2:48–2:55` | Return to the `HOLD` card and close. | “If the evidence disagrees, release stops—or the exception stays visible.” |
 
 The final 2:54 walkthrough is in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md). It shows the active GPT-5.6 proposal path, deterministic admission/rejection, causal recompilation, reset, human `HOLD`, and fresh verification. The validated upload master has SHA-256 `90f7eb678e3499edaaf34f033eec179075ada49ba0178d4071804569bfe6c6cb`.
+
+## Try to make it go `READY`
+
+Run `npm run challenge` to replay three adversarial cases: unauthorized approval, an invented source line, and a stale packet target. All must be rejected, and the handoff must remain on `HOLD`. [The complete scratch-copy challenge](JUDGES.md#try-to-make-it-go-ready) includes a source edit so judges can verify that a changed packet invalidates the checked-in proposal instead of being silently accepted.
 
 ## Synthetic data, no client data
 
@@ -141,6 +171,8 @@ npm run test
 npm run build
 npm run demo
 npm run privacy:scan
+npm run challenge
+npm run receipt:submission
 ```
 
 The automated web checks cover server-rendered product content, built-asset forbidden strings, proposal review/application/reset semantics through the real raw-module bundle, and accessible proposal and export controls. Responsive CSS and broader accessibility behavior were source-reviewed; cross-browser clipboard, download, focus-order, and phone-layout behavior remains outside the deterministic core guarantee.

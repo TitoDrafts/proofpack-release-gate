@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">The ProofPack authority boundary</title>
+  <desc id="desc">GPT-5.6 proposes untrusted evidence bindings, a deterministic reviewer judges admissibility, and a human retains real-world release authority.</desc>
+  <rect width="1600" height="900" fill="#f2efe7"/>
+  <rect x="0" y="0" width="1600" height="20" fill="#ff5a1f"/>
+  <text x="80" y="94" font-family="Arial, Helvetica, sans-serif" font-size="50" font-weight="800" fill="#111111">THE PROOFPACK AUTHORITY BOUNDARY</text>
+  <text x="80" y="140" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#373737">Evidence outranks confidence. Each stage has a smaller, explicit power.</text>
+
+  <rect x="70" y="205" width="420" height="460" rx="22" fill="#ffffff" stroke="#111111" stroke-width="4"/>
+  <rect x="70" y="205" width="420" height="82" rx="20" fill="#111111"/>
+  <text x="102" y="255" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#ffffff">1 · GPT-5.6</text>
+  <text x="102" y="327" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#ff5a1f">PROPOSER · UNTRUSTED</text>
+  <text x="102" y="375" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#111111">May propose:</text>
+  <text x="102" y="415" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#373737">• exact source lines</text>
+  <text x="102" y="451" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#373737">• closed-schema values</text>
+  <text x="102" y="487" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#373737">• candidate rationale</text>
+  <text x="102" y="539" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#111111">Cannot set:</text>
+  <text x="102" y="579" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#373737">status · authority · rules</text>
+  <text x="102" y="615" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#373737">READY / HOLD · public copy</text>
+
+  <path d="M510 421 H566" stroke="#ff5a1f" stroke-width="8"/>
+  <path d="M560 398 L590 421 L560 444 Z" fill="#ff5a1f"/>
+  <text x="550" y="389" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="800" fill="#111111">SCHEMA</text>
+
+  <rect x="590" y="205" width="420" height="460" rx="22" fill="#ffffff" stroke="#111111" stroke-width="4"/>
+  <rect x="590" y="205" width="420" height="82" rx="20" fill="#ff5a1f"/>
+  <text x="622" y="255" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#111111">2 · DETERMINISTIC RULES</text>
+  <text x="622" y="327" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#b4370d">ADMISSIBILITY REVIEW</text>
+  <text x="622" y="375" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#373737">✓ packet fingerprint</text>
+  <text x="622" y="413" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#373737">✓ exact source anchor</text>
+  <text x="622" y="451" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#373737">✓ declared authority</text>
+  <text x="622" y="489" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#373737">✓ versioned finite rules</text>
+  <rect x="622" y="530" width="150" height="55" rx="8" fill="#e9f7ef" stroke="#18794e" stroke-width="3"/>
+  <text x="642" y="566" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="800" fill="#18794e">2 ADMITTED</text>
+  <rect x="790" y="530" width="188" height="55" rx="8" fill="#fff0eb" stroke="#b4370d" stroke-width="3"/>
+  <text x="807" y="566" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="800" fill="#b4370d">1 REJECTED</text>
+  <text x="622" y="620" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="800" fill="#b4370d">UNAUTHORIZED_AUTHORITY</text>
+
+  <path d="M1030 421 H1086" stroke="#ff5a1f" stroke-width="8"/>
+  <path d="M1080 398 L1110 421 L1080 444 Z" fill="#ff5a1f"/>
+  <text x="1070" y="389" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="800" fill="#111111">ADMITTED</text>
+
+  <rect x="1110" y="205" width="420" height="460" rx="22" fill="#ffffff" stroke="#111111" stroke-width="4"/>
+  <rect x="1110" y="205" width="420" height="82" rx="20" fill="#111111"/>
+  <text x="1142" y="255" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#ffffff">3 · HUMAN</text>
+  <text x="1142" y="327" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#ff5a1f">RELEASE AUTHORITY</text>
+  <text x="1142" y="375" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#373737">• applies admitted bindings</text>
+  <text x="1142" y="413" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#373737">• inspects exact evidence</text>
+  <text x="1142" y="451" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#373737">• resolves exceptions</text>
+  <text x="1142" y="489" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#373737">• owns real-world release</text>
+  <rect x="1142" y="530" width="356" height="92" rx="10" fill="#fff0eb" stroke="#b4370d" stroke-width="3"/>
+  <text x="1166" y="567" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="800" fill="#b4370d">CANNOT SILENTLY ERASE</text>
+  <text x="1166" y="597" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="800" fill="#b4370d">A BLOCKER OR CONFLICT</text>
+
+  <rect x="70" y="715" width="1460" height="112" rx="18" fill="#111111"/>
+  <text x="800" y="762" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#ffffff">CONTRADICTORY DOCUMENTS STAY ON HOLD</text>
+  <text x="800" y="801" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#ff8b5e">Millwork proving ground → a pattern for high-stakes handoffs</text>
+  <text x="1518" y="872" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#555555">ProofPack Release Gate · synthetic evidence only</text>
+</svg>

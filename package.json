@@ -16,6 +16,8 @@
     "test:rendered": "node --test tests/rendered-html.test.mjs",
     "test": "npm run test:unit && npm run build && npm run test:rendered",
     "demo": "tsx scripts/proofpack-demo.ts fixtures/project-alder/packet.json",
+    "challenge": "tsx scripts/proofpack-challenge.ts",
+    "receipt:submission": "node scripts/submission-receipt.mjs",
     "ai:propose": "tsx scripts/ai-propose.ts",
     "privacy:scan": "node scripts/privacy-scan.mjs",
     "verify": "npm run lint && npm run typecheck && npm run test && npm run demo && npm run privacy:scan"
