@@ -4,6 +4,7 @@ import type {
   ClaimStatus,
   Observation,
   RuleSet,
+  SafetyLabel,
 } from "./types.ts";
 
 interface Evaluation {
@@ -37,6 +38,13 @@ function ownEvidenceIds(observations: readonly Observation[]): string[] {
 
 function dependencyEvidenceIds(dependencies: readonly ClaimResult[]): string[] {
   return sortedUnique(dependencies.flatMap(({ evidenceIds }) => evidenceIds));
+}
+
+function lineageSafety(claim: ClaimRule, dependencies: readonly ClaimResult[]): SafetyLabel {
+  return claim.anchors.some(({ safety }) => safety === "RESTRICTED")
+    || dependencies.some(({ lineageSafety: safety }) => safety === "RESTRICTED")
+    ? "RESTRICTED"
+    : "PUBLIC";
 }
 
 function directSupportAnchorIds(claim: ClaimRule): string[] {
@@ -205,12 +213,14 @@ function materializeClaim(
   rules: RuleSet,
   claim: ClaimRule,
   result: Evaluation,
+  dependencies: readonly ClaimResult[],
 ): ClaimResult {
   return {
     id: claim.id,
     title: claim.title,
     publicTitle: claim.publicTitle,
     status: result.status,
+    lineageSafety: lineageSafety(claim, dependencies),
     critical: claim.critical,
     reasonCodes: sortedUnique(result.reasonCodes),
     ruleId: rules.rulesetId,
@@ -262,7 +272,7 @@ export function classifyClaims(rules: RuleSet, observations: readonly Observatio
         : claim.kind === "exclusive"
           ? evaluateExclusiveClaim(context)
           : evaluateGateClaim(context);
-    const result = materializeClaim(rules, claim, evaluated);
+    const result = materializeClaim(rules, claim, evaluated, dependencies);
     results.set(claim.id, result);
     evaluating.delete(claim.id);
     return result;

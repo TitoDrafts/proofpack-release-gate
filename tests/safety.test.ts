@@ -66,17 +66,54 @@ test("omits a verified claim when any contributing observation is restricted", a
   assert.doesNotMatch(result.artifacts.shareableMarkdown, /Public claim/u);
 });
 
-test("propagates restricted lineage through a verified gate dependency", async () => {
-  const restricted = { ...makeSource("restricted", "MATCH"), safety: "RESTRICTED" as const };
+test("omits a verified claim whose unmatched restricted contradiction and blocker anchors affect its status", async () => {
+  const restricted = { ...makeSource("restricted", "NO RESTRICTED MATCH"), safety: "RESTRICTED" as const };
+  const publicEvidence = makeSource("public-evidence", "MATCH");
+  const claim = makeClaim({
+    id: "restricted-absence",
+    anchors: [
+      makeAnchor({ id: "public-support", sourceId: "public-evidence" }),
+      makeAnchor({
+        id: "restricted-contradiction",
+        sourceId: "restricted",
+        selector: { kind: "line", contains: "RESTRICTED CONTRADICTION" },
+        effect: "CONTRADICT",
+        safety: "RESTRICTED",
+      }),
+      makeAnchor({
+        id: "restricted-blocker",
+        sourceId: "restricted",
+        selector: { kind: "line", contains: "RESTRICTED BLOCKER" },
+        effect: "BLOCK",
+        safety: "RESTRICTED",
+      }),
+    ],
+  });
+
+  const result = await compileProofPack(makeCompileInput([claim], [publicEvidence, restricted]));
+
+  assert.equal(result.claims[0]?.status, "VERIFIED");
+  assert.equal(result.claims[0]?.lineageSafety, "RESTRICTED");
+  assert.deepEqual(result.shareable.verifiedOutcomes, []);
+});
+
+test("propagates unmatched restricted predicate lineage through a verified gate dependency", async () => {
+  const restricted = { ...makeSource("restricted", "NO RESTRICTED MATCH"), safety: "RESTRICTED" as const };
+  const dependencyEvidence = makeSource("dependency-evidence", "MATCH");
   const gateEvidence = makeSource("gate-evidence", "MATCH");
   const dependency = makeClaim({
     id: "restricted-dependency",
     critical: false,
-    anchors: [makeAnchor({
-      id: "restricted-anchor",
-      sourceId: "restricted",
-      safety: "RESTRICTED",
-    })],
+    anchors: [
+      makeAnchor({ id: "dependency-support", sourceId: "dependency-evidence" }),
+      makeAnchor({
+        id: "restricted-absence",
+        sourceId: "restricted",
+        selector: { kind: "line", contains: "RESTRICTED CONTRADICTION" },
+        effect: "CONTRADICT",
+        safety: "RESTRICTED",
+      }),
+    ],
   });
   const gate = makeClaim({
     id: "public-gate",
@@ -86,9 +123,14 @@ test("propagates restricted lineage through a verified gate dependency", async (
     publicTitle: "Public gate is complete",
   });
 
-  const result = await compileProofPack(makeCompileInput([dependency, gate], [restricted, gateEvidence]));
+  const result = await compileProofPack(makeCompileInput(
+    [dependency, gate],
+    [restricted, dependencyEvidence, gateEvidence],
+  ));
 
+  assert.equal(result.claims.find(({ id }) => id === dependency.id)?.lineageSafety, "RESTRICTED");
   assert.equal(result.claims.find(({ id }) => id === gate.id)?.status, "VERIFIED");
+  assert.equal(result.claims.find(({ id }) => id === gate.id)?.lineageSafety, "RESTRICTED");
   assert.deepEqual(result.shareable.verifiedOutcomes, []);
 });
 
@@ -102,6 +144,34 @@ test("rejects a public-eligible compiled claim whose evidence lineage cannot be 
   const result = await compileProofPack(makeCompileInput([makeClaim()]));
   const corrupted = structuredClone(result);
   corrupted.claims[0]!.evidenceIds = ["observation-missing"];
+
+  await assert.rejects(
+    () => buildShareableProjection(corrupted),
+    (error: unknown) => error instanceof ShareableExportError
+      && error.code === "SHAREABLE_LINEAGE_AMBIGUOUS",
+  );
+});
+
+test("rejects public-eligible compiled claims with missing or invalid closed lineage safety", async () => {
+  const result = await compileProofPack(makeCompileInput([makeClaim()]));
+  const missing = structuredClone(result);
+  const invalid = structuredClone(result);
+  delete (missing.claims[0] as { lineageSafety?: unknown }).lineageSafety;
+  (invalid.claims[0] as { lineageSafety?: unknown }).lineageSafety = "UNKNOWN";
+
+  for (const corrupted of [missing, invalid]) {
+    await assert.rejects(
+      () => buildShareableProjection(corrupted),
+      (error: unknown) => error instanceof ShareableExportError
+        && error.code === "SHAREABLE_LINEAGE_AMBIGUOUS",
+    );
+  }
+});
+
+test("rejects compiled claims with ambiguous closed lineage safety before eligibility filtering", async () => {
+  const result = await compileProofPack(makeCompileInput([makeClaim({ publicEligibleWhenVerified: false })]));
+  const corrupted = structuredClone(result);
+  delete (corrupted.claims[0] as { lineageSafety?: unknown }).lineageSafety;
 
   await assert.rejects(
     () => buildShareableProjection(corrupted),

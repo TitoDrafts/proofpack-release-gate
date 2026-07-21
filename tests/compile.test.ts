@@ -45,17 +45,18 @@ test("compiles Project Alder into its required deterministic release handoff", a
     "Do not release fabrication until the current traveler acknowledges RFI-042.",
     "Do not release fabrication while PL-17 and PL-18 remain active.",
   ]);
-  assert.deepEqual(result.claims.map(({ id, reasonCodes, missingPredicates, publicEligible }) => ({
+  assert.deepEqual(result.claims.map(({ id, reasonCodes, missingPredicates, publicEligible, lineageSafety }) => ({
     id,
     reasonCodes,
     missingPredicates,
     publicEligible,
+    lineageSafety,
   })), [
-    { id: "fabrication-release", reasonCodes: ["DIRECT_BLOCKER_ACTIVE"], missingPredicates: [], publicEligible: false },
-    { id: "field-dimensions-current", reasonCodes: ["DIRECT_PREDICATES_COMPLETE"], missingPredicates: [], publicEligible: true },
-    { id: "finish-coordinated", reasonCodes: ["EXCLUSIVE_VALUES_UNRESOLVED"], missingPredicates: ["finish-resolver-traveler-ack"], publicEligible: false },
-    { id: "rfi-incorporated", reasonCodes: ["DECLARED_EVIDENCE_MISSING"], missingPredicates: ["rfi-042-traveler-ack"], publicEligible: false },
-    { id: "traveler-current-finish", reasonCodes: ["INFERENCE_PREMISES_COMPLETE"], missingPredicates: [], publicEligible: false },
+    { id: "fabrication-release", reasonCodes: ["DIRECT_BLOCKER_ACTIVE"], missingPredicates: [], publicEligible: false, lineageSafety: "RESTRICTED" },
+    { id: "field-dimensions-current", reasonCodes: ["DIRECT_PREDICATES_COMPLETE"], missingPredicates: [], publicEligible: true, lineageSafety: "PUBLIC" },
+    { id: "finish-coordinated", reasonCodes: ["EXCLUSIVE_VALUES_UNRESOLVED"], missingPredicates: ["finish-resolver-traveler-ack"], publicEligible: false, lineageSafety: "RESTRICTED" },
+    { id: "rfi-incorporated", reasonCodes: ["DECLARED_EVIDENCE_MISSING"], missingPredicates: ["rfi-042-traveler-ack"], publicEligible: false, lineageSafety: "RESTRICTED" },
+    { id: "traveler-current-finish", reasonCodes: ["INFERENCE_PREMISES_COMPLETE"], missingPredicates: [], publicEligible: false, lineageSafety: "RESTRICTED" },
   ]);
   assert.equal(result.claims.every(({ ruleId, ruleVersion }) => ruleId === "millwork-release" && ruleVersion === "1.0.0"), true);
 });

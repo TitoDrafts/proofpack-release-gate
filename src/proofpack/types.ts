@@ -119,6 +119,7 @@ export interface ClaimResult {
   title: string;
   publicTitle: string;
   status: ClaimStatus;
+  lineageSafety: SafetyLabel;
   critical: boolean;
   reasonCodes: string[];
   ruleId: string;

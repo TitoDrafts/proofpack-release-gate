@@ -167,7 +167,8 @@ test("causal diff rejects incompatible packet and engine identities", async () =
     assert.throws(
       () => diffCompiledPacks(pack, incompatible),
       (error: unknown) => error instanceof PackDiffError
-        && error.code === "PACK_DIFF_IDENTITY_MISMATCH",
+        && error.code === "PACK_DIFF_IDENTITY_MISMATCH"
+        && /packet identity, ruleset\/version identity, and engine identity/i.test(error.message),
       field,
     );
   }

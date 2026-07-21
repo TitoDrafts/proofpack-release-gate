@@ -12,7 +12,7 @@ export class PackDiffError extends Error {
   readonly code = "PACK_DIFF_IDENTITY_MISMATCH" as const;
 
   constructor() {
-    super("PACK_DIFF_IDENTITY_MISMATCH: Causal diff requires matching packet and ruleset identities.");
+    super("PACK_DIFF_IDENTITY_MISMATCH: Causal diff requires matching packet identity, ruleset/version identity, and engine identity.");
     this.name = "PackDiffError";
   }
 }

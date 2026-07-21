@@ -93,7 +93,16 @@ export async function buildShareableProjection(pack: CompiledPackStages): Promis
   const verifiedOutcomes: ShareableOutcome[] = [];
 
   for (const claim of pack.claims) {
+    if (claim.lineageSafety !== "PUBLIC" && claim.lineageSafety !== "RESTRICTED") {
+      throw new ShareableExportError(
+        "SHAREABLE_LINEAGE_AMBIGUOUS",
+        "A compiled claim has unresolved closed safety lineage.",
+      );
+    }
     if (claim.status !== "VERIFIED" || !claim.publicEligible) {
+      continue;
+    }
+    if (claim.lineageSafety === "RESTRICTED") {
       continue;
     }
     if (claim.evidenceIds.length === 0) {

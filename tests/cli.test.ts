@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -156,6 +156,12 @@ test("publishes one complete output directory after successful in-memory compila
     assert.equal(result.status, 0, result.stderr);
     const parsed = JSON.parse(result.stdout) as Awaited<ReturnType<typeof compileProofPack>>;
 
+    assert.deepEqual((await readdir(out)).sort(), [
+      "compiled.json",
+      "operator.md",
+      "receipt.json",
+      "shareable.md",
+    ]);
     assert.equal(await readFile(join(out, "operator.md"), "utf8"), parsed.artifacts.operatorMarkdown);
     assert.equal(await readFile(join(out, "shareable.md"), "utf8"), parsed.artifacts.shareableMarkdown);
     assert.deepEqual(JSON.parse(await readFile(join(out, "receipt.json"), "utf8")), parsed.receipt);
