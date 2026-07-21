@@ -107,6 +107,59 @@ test("privacy scanner normalizes provider-prefixed camelCase keys without matchi
   assert.deepEqual(scanText("probe.config", `${innocentKey}=${secretValue}`), []);
 });
 
+test("privacy scanner detects JavaScript and TypeScript credential declarations and later assignments", () => {
+  const secretValue = ["live", "credential", "value"].join("-");
+  const openaiKey = ["openai", "Api", "Key"].join("");
+  const githubKey = ["github", "Token"].join("");
+  const databaseKey = ["db", "Password"].join("");
+  const serviceKey = ["service", "Private", "Key"].join("");
+  const delimitedKey = ["OPENAI", "API", "KEY"].join("_");
+  const source = [
+    `const ${openaiKey} = "${secretValue}";`,
+    `let ${githubKey}='${secretValue}';`,
+    `var ${databaseKey} = "${secretValue}";`,
+    `const ${serviceKey}: string = \`${secretValue}\`;`,
+    `${serviceKey} = "${secretValue}";`,
+    `const ${delimitedKey} = "${secretValue}";`,
+  ].join("\n");
+
+  assert.deepEqual(
+    scanText("probe.ts", source).map(({ code, line }) => ({ code, line })),
+    [1, 2, 3, 4, 5, 6].map((line) => ({ code: "SECRET_ASSIGNMENT", line })),
+  );
+  assert.equal(JSON.stringify(scanText("probe.ts", source)).includes(secretValue), false);
+});
+
+test("privacy scanner preserves declaration value exemptions and operator and key boundaries", () => {
+  const secretValue = ["comparison", "credential", "value"].join("-");
+  const openaiKey = ["openai", "Api", "Key"].join("");
+  const githubKey = ["github", "Token"].join("");
+  const databaseKey = ["db", "Password"].join("");
+  const serviceKey = ["service", "Private", "Key"].join("");
+  const fusedInnocentKey = ["nota", "secret"].join("");
+  const nonSuffixKey = ["secret", "Handler"].join("");
+  const source = [
+    `const ${openaiKey} = process.env.OPENAI_API_KEY;`,
+    `let ${githubKey}: string = import.meta.env.GITHUB_TOKEN;`,
+    `${openaiKey} = import.meta.env.OPENAI_API_KEY;`,
+    `var ${databaseKey} = "";`,
+    `const ${serviceKey} = "example";`,
+    `const ${openaiKey} = "placeholder";`,
+    `let ${githubKey} = <injected-at-runtime>;`,
+    `const ${githubKey} = encodedToken.replace(/old/gu, "new");`,
+    `${serviceKey} = buildCredential();`,
+    `${serviceKey} = encodedToken.replace(/old/gu, "new");`,
+    `const ${openaiKey} = \`prefix-\${process.env.OPENAI_API_KEY}\`;`,
+    `const ${openaiKey} = "prefix-" + dynamicSuffix;`,
+    `${githubKey} === "${secretValue}";`,
+    `${githubKey} => consume(${githubKey});`,
+    `const ${fusedInnocentKey} = "${secretValue}";`,
+    `const ${nonSuffixKey} = "${secretValue}";`,
+  ].join("\n");
+
+  assert.deepEqual(scanText("probe.ts", source), []);
+});
+
 test("privacy scanner preserves placeholder and environment-reference exemptions", () => {
   const keyA = ["se", "cret"].join("");
   const keyB = ["to", "ken"].join("");

@@ -19,6 +19,9 @@ const knownTextConfigNames = new Set([
   ".editorconfig", ".gitattributes", ".gitignore", ".npmrc", ".nvmrc", "dockerfile", "license",
   "makefile",
 ]);
+const javascriptAndTypeScriptExtensions = new Set([
+  ".cjs", ".cts", ".js", ".jsx", ".mjs", ".mts", ".ts", ".tsx",
+]);
 const explicitBinaryExtensions = new Set([
   ".7z", ".avi", ".bmp", ".db", ".dll", ".doc", ".docx", ".eot", ".exe", ".gif", ".gz",
   ".ico", ".jpeg", ".jpg", ".mov", ".mp3", ".mp4", ".ogg", ".otf", ".pdf", ".png", ".ppt",
@@ -83,7 +86,7 @@ function assignmentKey(match) {
 }
 
 function assignmentValue(match) {
-  return String(match[4] ?? match[5] ?? match[6] ?? match[7] ?? "");
+  return String(match[4] ?? match[5] ?? match[6] ?? match[7] ?? match[8] ?? "");
 }
 
 function normalizedKeyTokens(key) {
@@ -100,6 +103,37 @@ function hasSensitiveKeySuffix(key) {
   return sensitiveKeySuffixes.some((suffix) =>
     tokens.length >= suffix.length
     && suffix.every((token, index) => token === tokens[tokens.length - suffix.length + index]));
+}
+
+function isHardCodedCredentialAssignment(key, value) {
+  return hasSensitiveKeySuffix(key)
+    && value.length > 0
+    && !/^(?:example|placeholder|redacted|synthetic|test|dummy|none|null|undefined|false|true)$/iu.test(value)
+    && !/^process\.env(?:\.|\[)/u.test(value)
+    && !/^import\.meta\.env(?:\.|\[)/u.test(value)
+    && !/^<[^>]+>$/u.test(value)
+    && !/^\$\{[^}]+\}$/u.test(value)
+    && !/^\$[A-Z_][A-Z0-9_]*$/iu.test(value);
+}
+
+function isJavaScriptOrTypeScriptPath(path) {
+  return javascriptAndTypeScriptExtensions.has(extname(path).toLowerCase());
+}
+
+function hasCompleteJavaScriptLiteralRhs(text, match) {
+  const afterMatch = text.slice(match.index + match[0].length);
+  const lineEnd = afterMatch.indexOf("\n");
+  let tail = (lineEnd === -1 ? afterMatch : afterMatch.slice(0, lineEnd)).trimStart();
+  while (tail.startsWith("/*")) {
+    const commentEnd = tail.indexOf("*/", 2);
+    if (commentEnd === -1) {
+      return false;
+    }
+    tail = tail.slice(commentEnd + 2).trimStart();
+  }
+  return tail.length === 0
+    || tail.startsWith("//")
+    || ",;}])".includes(tail[0]);
 }
 
 export function scanText(path, rawText, options = {}) {
@@ -128,21 +162,42 @@ export function scanText(path, rawText, options = {}) {
     path,
     text,
     "SECRET_ASSIGNMENT",
-    /(?<![A-Za-z0-9_])(?:"([^"\r\n]+)"|'([^'\r\n]+)'|([A-Za-z][A-Za-z0-9_. -]*?))\s*(?::|=(?!=|>))\s*(?:"([^"\r\n]*)"|'([^'\r\n]*)'|(\$\{[^}\r\n]+\})|([^\s,;}\]]+))/gu,
+    /(?<![A-Za-z0-9_])(?:"([^"\r\n]+)"|'([^'\r\n]+)'|([A-Za-z][A-Za-z0-9_. -]*?))\s*(?::|=(?!=|>))\s*(?:"([^"\r\n]*)"|'([^'\r\n]*)'|`([^`\r\n]*)`|(\$\{[^}\r\n]+\})|([^\s,;}\]]+))/gu,
     (match) => {
       const key = assignmentKey(match);
       const value = assignmentValue(match);
       const lineStart = text.lastIndexOf("\n", match.index - 1) + 1;
       const linePrefix = text.slice(lineStart, match.index);
+      const hasJavaScriptLiteral = match[4] !== undefined
+        || match[5] !== undefined
+        || match[6] !== undefined;
+      const hasStaticTemplateLiteral = match[6] === undefined || !String(match[6]).includes("${");
       return !/\b(?:const|let|var)\s*$/u.test(linePrefix)
         && !/\b(?:const|let|var)\s+/u.test(key)
-        && hasSensitiveKeySuffix(key)
-        && value.length > 0
-        && !/^(?:example|placeholder|redacted|synthetic|test|dummy|none|null|undefined|false|true)$/iu.test(value)
-        && !/^process\.env(?:\.|\[)/u.test(value)
-        && !/^<[^>]+>$/u.test(value)
-        && !/^\$\{[^}]+\}$/u.test(value)
-        && !/^\$[A-Z_][A-Z0-9_]*$/iu.test(value);
+        && (
+          !isJavaScriptOrTypeScriptPath(path)
+          || (
+            hasJavaScriptLiteral
+            && hasStaticTemplateLiteral
+            && hasCompleteJavaScriptLiteralRhs(text, match)
+          )
+        )
+        && isHardCodedCredentialAssignment(key, value);
+    },
+  );
+  addPatternFindings(
+    findings,
+    path,
+    text,
+    "SECRET_ASSIGNMENT",
+    /(?<![A-Za-z0-9_$])(?:const|let|var)\s+([A-Za-z_$][A-Za-z0-9_$]*)(?:\s*:\s*[^=;\r\n]+)?\s*=(?!=|>)\s*(?:"([^"\r\n]*)"|'([^'\r\n]*)'|`([^`\r\n]*)`)/gu,
+    (match) => {
+      const key = String(match[1] ?? "");
+      const value = String(match[2] ?? match[3] ?? match[4] ?? "");
+      const hasStaticTemplateLiteral = match[4] === undefined || !String(match[4]).includes("${");
+      return hasStaticTemplateLiteral
+        && hasCompleteJavaScriptLiteralRhs(text, match)
+        && isHardCodedCredentialAssignment(key, value);
     },
   );
   addPatternFindings(
