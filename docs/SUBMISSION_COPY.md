@@ -12,7 +12,7 @@ ProofPack compiles synthetic millwork handoff files into evidence-linked release
 
 ## Track
 
-Work & Productivity
+Work and productivity
 
 ## Problem
 
@@ -58,7 +58,7 @@ The entrant retained the domain choice, synthetic-only boundary, model-free runt
 - Every claim result carries a status, reason code, ruleset version, evidence IDs, missing predicates, and next action; resolved observations carry exact locators and excerpts, while stop conditions appear only where declared.
 - A causal replay diff in which only `finish-coordinated` and `rfi-incorporated` change, while the sample gate keeps release blocked.
 - Reproducibility/integrity receipts plus internal and allowlisted shareable Markdown artifacts.
-- A complete local verification gate. The fresh 2026-07-21 final release run passed 133 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests, plus lint, typecheck, production build, CLI demo, and privacy scan.
+- A complete local verification gate. The fresh 2026-07-21 final release run passed 139 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests, plus lint, typecheck, production build, CLI demo, and privacy scan.
 
 ## Lessons learned
 

@@ -12,12 +12,13 @@ Submission media:
 - **Three-minute video:** `REPLACE_BEFORE_SUBMISSION_WITH_PUBLIC_YOUTUBE_URL`
 - **Product image:** [1200 × 630 release card](https://proofpack-release-gate.tito943366.chatgpt.site/og.png)
 
-## Judge quickstart: one-command CLI demo
+## Judge quickstart: local CLI demo
 
 Prerequisite: Node.js `>=22.13.0` and npm. The most recent repository verification used Node.js `v24.15.0` and npm `11.12.1` on Windows.
 
 ```powershell
-npm ci && npm run demo
+npm ci
+npm run demo
 ```
 
 Expected decision and claim states:
@@ -36,7 +37,8 @@ INFERRED traveler-current-finish
 ## Web quickstart
 
 ```powershell
-npm ci && npm run dev
+npm ci
+npm run dev
 ```
 
 Open the local URL printed by the development server. The single page compiles the bundled raw fixture through the same core used by the CLI; the React components do not contain a second classification implementation.
@@ -85,10 +87,11 @@ CLI filesystem I/O ──┘              -> classify -> derive HOLD / READY
 ```
 
 - The shared `src/proofpack` core receives values and owns validation, normalization, anchor resolution, classification, handoff derivation, safety lineage, artifacts, diffs, and receipts. It contains no filesystem, DOM, wall-clock, randomness, locale-sensitive formatting, or network dependency.
-- The CLI confines declared inputs beneath the packet directory, invokes the core once, and publishes a complete artifact bundle only after successful compilation.
+- The CLI confines declared inputs beneath the packet directory, rejects malformed UTF-8 with fatal decoding, invokes the core once, and publishes a complete artifact bundle only after successful compilation.
 - The web adapter bundles the seven raw fixture files, invokes the same core in the browser, and owns only interaction state.
 - Supported selectors are one unambiguous text/Markdown line containing a declared string, predeclared log events whose declared fields match, and JSON Pointer equality or presence checks.
-- Supported claim kinds are `direct`, `inference`, `exclusive`, and `gate`, with named dependencies and an optional claim-local authority resolver for exclusive values.
+- Supported claim kinds are `direct`, `inference`, `exclusive`, and `gate`, with named dependencies and an optional claim-local authority resolver for exclusive values. A gate may be established by its matched direct supports or by all declared dependencies being verified; a gate with neither route is rejected.
+- Only `manifest.publicAlias`, `claim.publicTitle`, and `claim.publicNextAction` can supply authored strings to the shareable projection. Internal titles, actions, identifiers, source paths, evidence, and diagnostics have no projection route.
 - There is no arbitrary JavaScript, regular-expression editor, plug-in execution, general expression language, OCR, PDF parsing, or natural-language extraction.
 
 ## Status and decision semantics
@@ -111,7 +114,7 @@ The complete local gate is:
 npm run verify
 ```
 
-It runs lint, typecheck, TypeScript and privacy-scanner tests, a production build, rendered-product tests, the CLI demo, and the repository/generated-artifact privacy scan. The fresh final release run on 2026-07-21 passed 133 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests; the build, CLI demo, and final privacy scan also exited successfully.
+It runs lint, typecheck, TypeScript and privacy-scanner tests, a production build, rendered-product tests, the CLI demo, and the repository/generated-artifact privacy scan. The fresh final release run on 2026-07-21 passed 139 TypeScript tests, 21 privacy-scanner tests, and 3 rendered-product tests; the build, CLI demo, and final privacy scan also exited successfully.
 
 Useful focused commands:
 

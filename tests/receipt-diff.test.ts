@@ -132,6 +132,18 @@ test("replay changes exactly the two causal claims and leaves the active sample 
   assert.deepEqual(diff.changedHandoffFields, ["done", "notDone", "stopConditions", "summary"]);
 });
 
+test("replay plus sample approval satisfies the dependency-established fabrication gate", async () => {
+  const input = appendReceipt(await loadProjectAlder(), replayLine);
+  const sampleRegister = input.sources.find(({ id }) => id === "sample-register");
+  assert.ok(sampleRegister);
+  sampleRegister.content = sampleRegister.content.replace('"status": "PENDING"', '"status": "APPROVED"');
+
+  const result = await compileProofPack(input);
+
+  assert.equal(result.claims.find(({ id }) => id === "fabrication-release")?.status, "VERIFIED");
+  assert.equal(result.handoff.decision, "READY");
+});
+
 test("reset recompilation restores the exact original receipt", async () => {
   const beforeInput = await loadProjectAlder();
   const before = await compileProofPack(beforeInput);

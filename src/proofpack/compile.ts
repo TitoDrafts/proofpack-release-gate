@@ -61,6 +61,7 @@ export async function compileProofPack(input: CompileInput): Promise<CompiledPac
   const stages: CompiledPackStages = {
     packetId: normalized.manifest.packetId,
     title: normalized.manifest.title,
+    publicAlias: normalized.manifest.publicAlias,
     asOf: normalized.manifest.asOf,
     rulesetId: normalized.rules.rulesetId,
     rulesetVersion: normalized.rules.rulesetVersion,

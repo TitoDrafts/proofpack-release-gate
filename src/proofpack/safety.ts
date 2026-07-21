@@ -87,7 +87,7 @@ function indexObservations(observations: readonly Observation[]): Map<string, Ob
 }
 
 export async function buildShareableProjection(pack: CompiledPackStages): Promise<ShareablePack> {
-  const packetAlias = normalizeText(pack.title);
+  const packetAlias = normalizeText(pack.publicAlias);
   assertPlainPublicText(packetAlias);
   const observations = indexObservations(pack.observations);
   const verifiedOutcomes: ShareableOutcome[] = [];
@@ -124,7 +124,7 @@ export async function buildShareableProjection(pack: CompiledPackStages): Promis
     if (evidence.some(({ safety }) => safety === "RESTRICTED")) {
       continue;
     }
-    const outcome = normalizeOutcome({ title: claim.publicTitle, nextStep: claim.nextAction });
+    const outcome = normalizeOutcome({ title: claim.publicTitle, nextStep: claim.publicNextAction });
     assertPlainPublicText(outcome.title);
     assertPlainPublicText(outcome.nextStep);
     verifiedOutcomes.push(outcome);

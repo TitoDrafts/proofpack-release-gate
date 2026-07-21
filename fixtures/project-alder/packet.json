@@ -2,6 +2,7 @@
   "schemaVersion": "proofpack.packet/v1",
   "packetId": "project-alder-aw-214",
   "title": "Project Alder · Reception Desk AW-214",
+  "publicAlias": "Synthetic millwork release packet",
   "asOf": "2026-07-21T05:00:00.000Z",
   "rulesFile": "release-rules.json",
   "sources": [

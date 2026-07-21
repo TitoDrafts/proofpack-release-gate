@@ -21,7 +21,10 @@ function statusFixture(name: FixtureName): CompileInput {
   if (name === "unopposed direct blocker") {
     return makeCompileInput([makeClaim({
       kind: "gate",
-      anchors: [makeAnchor({ effect: "BLOCK", strength: "DIRECT" })],
+      anchors: [
+        makeAnchor({ id: "gate-pass", selector: { kind: "line", contains: "ABSENT" } }),
+        makeAnchor({ id: "gate-block", effect: "BLOCK", strength: "DIRECT" }),
+      ],
       stopCondition: "Stop release.",
     })]);
   }
@@ -126,7 +129,10 @@ test("treats a corroborating gate blocker as a qualifying contradiction", async 
 test("does not treat missing gate evidence as a blocker", async () => {
   const input = makeCompileInput([makeClaim({
     kind: "gate",
-    anchors: [makeAnchor({ effect: "BLOCK", selector: { kind: "line", contains: "ABSENT" } })],
+    anchors: [
+      makeAnchor({ id: "gate-pass", selector: { kind: "line", contains: "ABSENT PASS" } }),
+      makeAnchor({ id: "gate-block", effect: "BLOCK", selector: { kind: "line", contains: "ABSENT BLOCK" } }),
+    ],
   })]);
 
   const result = await compileProofPack(input);
@@ -211,6 +217,30 @@ test("propagates dependency disagreement but keeps a local blocker authoritative
     { id: "dependency", status: "CONFLICTED" },
     { id: "dependent-gate", status: "CONFLICTED" },
   ]);
+});
+
+test("allows verified dependencies to establish a dependency-only gate", async () => {
+  const prerequisite = makeClaim({
+    id: "prerequisite",
+    critical: false,
+    anchors: [makeAnchor({ id: "prerequisite-support" })],
+  });
+  const gate = makeClaim({
+    id: "dependency-only-gate",
+    kind: "gate",
+    anchors: [],
+    requiresVerified: [prerequisite.id],
+  });
+
+  const result = await compileProofPack(makeCompileInput([gate, prerequisite]));
+  const evaluatedGate = result.claims.find(({ id }) => id === gate.id);
+  const prerequisiteEvidence = result.observations
+    .filter(({ anchorId }) => anchorId === "prerequisite-support")
+    .map(({ id }) => id);
+
+  assert.equal(evaluatedGate?.status, "VERIFIED");
+  assert.deepEqual(evaluatedGate?.missingPredicates, []);
+  assert.deepEqual(evaluatedGate?.evidenceIds, prerequisiteEvidence);
 });
 
 test("requires verified dependencies for a named inference and emits its premise evidence", async () => {

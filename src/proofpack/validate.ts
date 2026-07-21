@@ -387,6 +387,7 @@ function validateClaim(value: unknown, path: string, diagnostics: Diagnostic[]):
       "requiresVerified",
       "authorityResolverAnchorId",
       "nextAction",
+      "publicNextAction",
       "stopCondition",
       "publicEligibleWhenVerified",
     ],
@@ -409,8 +410,9 @@ function validateClaim(value: unknown, path: string, diagnostics: Diagnostic[]):
   requiredBoolean(claim, "critical", diagnostics, "CLAIM_CRITICAL_REQUIRED", path);
   const anchors = requiredArray(claim, "anchors", diagnostics, "CLAIM_ANCHORS_REQUIRED", path);
   anchors?.forEach((anchor, index) => validateAnchor(anchor, `${path}.anchors[${index}]`, diagnostics));
+  let dependencies: string[] | undefined;
   if (hasOwn(claim, "requiresVerified")) {
-    validateStringArray(claim.requiresVerified, `${path}.requiresVerified`, diagnostics);
+    dependencies = validateStringArray(claim.requiresVerified, `${path}.requiresVerified`, diagnostics);
     if (kind !== undefined && kind !== "inference" && kind !== "gate") {
       addDiagnostic(
         diagnostics,
@@ -419,6 +421,21 @@ function validateClaim(value: unknown, path: string, diagnostics: Diagnostic[]):
         "Only inference and gate claims may declare verified dependencies.",
       );
     }
+  }
+  const hasDependencyRoute = dependencies !== undefined && dependencies.length > 0;
+  if (
+    kind === "gate"
+    && anchors !== undefined
+    && !anchors.some((anchor) => isRecord(anchor) && anchor.effect === "SUPPORT" && anchor.strength === "DIRECT")
+    && !hasDependencyRoute
+    && (!hasOwn(claim, "requiresVerified") || dependencies !== undefined)
+  ) {
+    addDiagnostic(
+      diagnostics,
+      "GATE_VERIFICATION_ROUTE_REQUIRED",
+      `${path}.anchors`,
+      "A gate requires a direct support anchor or at least one verified dependency.",
+    );
   }
   const authorityResolverAnchorId = optionalString(
     claim,
@@ -436,6 +453,7 @@ function validateClaim(value: unknown, path: string, diagnostics: Diagnostic[]):
     );
   }
   requiredString(claim, "nextAction", diagnostics, "CLAIM_NEXT_ACTION_REQUIRED", path);
+  requiredString(claim, "publicNextAction", diagnostics, "CLAIM_PUBLIC_NEXT_ACTION_REQUIRED", path);
   optionalString(claim, "stopCondition", diagnostics, "CLAIM_STOP_CONDITION_INVALID", path);
   requiredBoolean(
     claim,
@@ -455,7 +473,7 @@ function validateManifest(value: unknown, diagnostics: Diagnostic[]): UnknownRec
   }
   rejectUnknownFields(
     manifest,
-    ["schemaVersion", "packetId", "title", "asOf", "rulesFile", "sources"],
+    ["schemaVersion", "packetId", "title", "publicAlias", "asOf", "rulesFile", "sources"],
     diagnostics,
     "MANIFEST_UNKNOWN_FIELD",
     path,
@@ -471,6 +489,7 @@ function validateManifest(value: unknown, diagnostics: Diagnostic[]): UnknownRec
   }
   requiredString(manifest, "packetId", diagnostics, "PACKET_ID_REQUIRED", path);
   requiredString(manifest, "title", diagnostics, "PACKET_TITLE_REQUIRED", path);
+  requiredString(manifest, "publicAlias", diagnostics, "PACKET_PUBLIC_ALIAS_REQUIRED", path);
   const asOf = requiredString(manifest, "asOf", diagnostics, "PACKET_AS_OF_REQUIRED", path);
   checkTimestamp(asOf, diagnostics, `${path}.asOf`);
   const rulesFile = requiredString(manifest, "rulesFile", diagnostics, "RULES_FILE_REQUIRED", path);

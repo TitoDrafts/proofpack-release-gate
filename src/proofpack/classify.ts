@@ -193,7 +193,8 @@ export function evaluateGateClaim(context: EvaluationContext): Evaluation {
   const unresolvedDependencies = dependencies
     .filter(({ status }) => status !== "VERIFIED")
     .map(({ id }) => id);
-  if (expectedSupports.length > 0 && missingSupports.length === 0 && unresolvedDependencies.length === 0) {
+  const hasVerificationRoute = expectedSupports.length > 0 || dependencies.length > 0;
+  if (hasVerificationRoute && missingSupports.length === 0 && unresolvedDependencies.length === 0) {
     return evaluation(
       "VERIFIED",
       "GATE_PREREQUISITES_VERIFIED",
@@ -228,6 +229,7 @@ function materializeClaim(
     evidenceIds: sortedUnique(result.evidenceIds),
     missingPredicates: sortedUnique(result.missingPredicates),
     nextAction: claim.nextAction,
+    publicNextAction: claim.publicNextAction,
     ...(claim.stopCondition === undefined ? {} : { stopCondition: claim.stopCondition }),
     publicEligible: claim.publicEligibleWhenVerified && result.status === "VERIFIED",
   };

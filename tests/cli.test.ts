@@ -214,6 +214,35 @@ test("uses stable invalid-input exits and never emits a normal stack trace", asy
   });
 });
 
+test("rejects invalid UTF-8 in every CLI text-input class atomically", async () => {
+  const cases = [
+    { name: "manifest", file: "packet.json", verifyReceipt: false },
+    { name: "rules", file: "release-rules.json", verifyReceipt: false },
+    { name: "source", file: "incoming-receipts.log", verifyReceipt: false },
+    { name: "receipt", file: "expected-receipt.json", verifyReceipt: true },
+  ] as const;
+
+  for (const item of cases) {
+    await withFixture(async (directory) => {
+      const out = join(dirname(directory), `invalid-utf8-${item.name}-output`);
+      await writeFile(
+        join(directory, item.file),
+        Uint8Array.from([0x72, 0x65, 0x63, 0x65, 0x69, 0x70, 0x74, 0x0a, 0xff]),
+      );
+      const args = [join(directory, "packet.json"), "--out", out];
+      if (item.verifyReceipt) {
+        args.push("--verify-receipt", join(directory, item.file));
+      }
+
+      const result = runCli(args);
+
+      assert.equal(result.status, 2, item.name);
+      assert.equal(result.stderr, "INPUT_UTF8_INVALID: An input file is not valid UTF-8.\n", item.name);
+      await assert.rejects(() => readFile(join(out, "receipt.json"), "utf8"));
+    });
+  }
+});
+
 test("maps an unexpected compiler primitive failure to stable exit 70", async () => {
   await withFixture(async (directory) => {
     const preloader = join(dirname(directory), "break-digest.mjs");

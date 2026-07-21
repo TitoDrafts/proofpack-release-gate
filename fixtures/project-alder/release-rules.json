@@ -41,6 +41,7 @@
         "finish-coordinated"
       ],
       "nextAction": "Issue traveler Rev C citing RFI-042 and attach PL-18 sample approval.",
+      "publicNextAction": "Complete every release prerequisite before fabrication.",
       "stopCondition": "Do not issue a cut ticket.",
       "publicEligibleWhenVerified": false
     },
@@ -65,6 +66,7 @@
         }
       ],
       "nextAction": "Use the verified field dimensions for fabrication planning.",
+      "publicNextAction": "Use the verified field dimensions for fabrication planning.",
       "publicEligibleWhenVerified": true
     },
     {
@@ -120,6 +122,7 @@
       ],
       "authorityResolverAnchorId": "finish-resolver-traveler-ack",
       "nextAction": "Coordinate one finish basis and record it on the current traveler.",
+      "publicNextAction": "Use the coordinated finish basis.",
       "stopCondition": "Do not release fabrication while PL-17 and PL-18 remain active.",
       "publicEligibleWhenVerified": false
     },
@@ -161,6 +164,7 @@
         }
       ],
       "nextAction": "Issue traveler Rev C citing RFI-042.",
+      "publicNextAction": "Use the incorporated approved direction.",
       "stopCondition": "Do not release fabrication until the current traveler acknowledges RFI-042.",
       "publicEligibleWhenVerified": false
     },
@@ -193,6 +197,7 @@
         }
       ],
       "nextAction": "Confirm the active traveler finish against RFI-042.",
+      "publicNextAction": "Confirm the active traveler finish against the approved direction.",
       "publicEligibleWhenVerified": false
     }
   ]

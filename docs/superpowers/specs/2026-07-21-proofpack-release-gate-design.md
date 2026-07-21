@@ -1,8 +1,11 @@
 # ProofPack Release Gate Design
 
-**Date:** 2026-07-21  
-**Track:** OpenAI Build Week 2026 — Work & Productivity  
-**Runtime posture:** Fully local and deterministic; no API key, model call, analytics, external font, CDN asset, or outbound network request  
+**Date:** 2026-07-21
+
+**Track:** OpenAI Build Week 2026 — Work and productivity
+
+**Runtime posture:** Fully local and deterministic; no API key, model call, analytics, external font, CDN asset, or outbound network request
+
 **Data posture:** Synthetic fixtures only; no client files, names, drawings, email, paths, identifiers, screenshots, or proprietary shop data
 
 ## Product Thesis
@@ -114,6 +117,8 @@ Precedence for a valid claim evaluation:
 5. Complete named inference premises → `INFERRED`.
 6. Otherwise → `NEEDS_CONFIRMATION`.
 
+A gate is positively established when its declared direct supports match or when every declared dependency is `VERIFIED`; a gate with neither a direct-support route nor a dependency route is invalid rather than an unresolvable status.
+
 Every claim result contains `status`, stable `reasonCodes`, `ruleId`, `ruleVersion`, sorted `evidenceIds`, sorted `missingPredicates`, `nextAction`, and `stopCondition` where applicable. No numeric confidence or arbitrary trust score is used.
 
 Overall operational decision:
@@ -196,6 +201,8 @@ The receipt is a reproducibility/integrity receipt, not a digital signature, aut
 ProofPack does not generate an internal document and scrub it heuristically.
 
 Each source-derived value is labeled `PUBLIC` or `RESTRICTED`; missing or ambiguous labels reject shareable export. Safety lineage propagates through observations, claims, explanations, handoffs, and derived text. The shareable export is built from a separate typed allowlisted view model.
+
+The authored shareable string boundary is explicit: `manifest.publicAlias`, `claim.publicTitle`, and `claim.publicNextAction` are the only input strings allowed into that projection. Internal packet titles and next actions never supply shareable text, and missing explicit public fields reject the packet contract.
 
 The shareable projection:
 
@@ -331,7 +338,7 @@ The Build Week version has one route, one ruleset, and one primary fixture. It d
 
 **Project name:** ProofPack Release Gate  
 **Descriptor:** The handoff flight recorder for commercial millwork.  
-**Track:** Work & Productivity
+**Track:** Work and productivity
 
 Elevator pitch:
 

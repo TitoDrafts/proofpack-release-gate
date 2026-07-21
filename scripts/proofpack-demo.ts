@@ -19,6 +19,7 @@ import {
   sep,
 } from "node:path";
 import { pathToFileURL } from "node:url";
+import { TextDecoder } from "node:util";
 import {
   canonicalStringify,
   compileProofPack,
@@ -175,13 +176,22 @@ async function resolveReceiptFile(packetDirectory: string, requestedPath: string
   return canonical;
 }
 
-async function readJson(path: string): Promise<unknown> {
-  let text: string;
+async function readUtf8(path: string): Promise<string> {
+  let bytes: Uint8Array;
   try {
-    text = await readFile(path, "utf8");
+    bytes = await readFile(path);
   } catch {
     throw new CliInputError("INPUT_FILE_UNREADABLE", "An input file could not be read.");
   }
+  try {
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    throw new CliInputError("INPUT_UTF8_INVALID", "An input file is not valid UTF-8.");
+  }
+}
+
+async function readJson(path: string): Promise<unknown> {
+  const text = await readUtf8(path);
   try {
     return JSON.parse(text) as unknown;
   } catch {
@@ -218,12 +228,7 @@ async function hydrateCompileInput(packetArgument: string): Promise<{
     if (!isRecord(declaration)) {
       throw new CliInputError("PACKET_MANIFEST_INVALID", "Every source declaration must be an object.");
     }
-    let content: string;
-    try {
-      content = await readFile(sourcePaths[index]!, "utf8");
-    } catch {
-      throw new CliInputError("INPUT_FILE_UNREADABLE", "A source file could not be read.");
-    }
+    const content = await readUtf8(sourcePaths[index]!);
     return { ...(declaration as unknown as Omit<SourceDocument, "content">), content };
   }));
   return { input: { manifest, rules, sources }, packetDirectory };

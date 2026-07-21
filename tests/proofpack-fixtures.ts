@@ -95,6 +95,7 @@ export function makeClaim(overrides: Partial<ClaimRule> = {}): ClaimRule {
     critical: true,
     anchors: [makeAnchor({ id: `${id}-anchor` })],
     nextAction: `Resolve ${id}.`,
+    publicNextAction: `Complete public next step for ${id}.`,
     publicEligibleWhenVerified: true,
     ...overrides,
   };
@@ -109,6 +110,7 @@ export function makeCompileInput(
       schemaVersion: "proofpack.packet/v1",
       packetId: "status-fixture",
       title: "Status Fixture",
+      publicAlias: "Synthetic status fixture",
       asOf: "2026-07-21T05:00:00.000Z",
       rulesFile: "release-rules.json",
       sources: sources.map(({ id, file, mediaType, capturedAt, safety }) => ({

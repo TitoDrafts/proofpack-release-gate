@@ -8,6 +8,7 @@ const validInput: CompileInput = {
     schemaVersion: "proofpack.packet/v1",
     packetId: "project-alder-aw-214",
     title: "Project Alder · Reception Desk AW-214",
+    publicAlias: "Synthetic millwork release packet",
     asOf: "2026-07-21T05:00:00.000Z",
     rulesFile: "release-rules.json",
     sources: [{
@@ -57,6 +58,7 @@ function makeClaim(overrides: Partial<ClaimRule> = {}): ClaimRule {
     critical: false,
     anchors: [makeAnchor({ id: `${id}-anchor` })],
     nextAction: "Use the verified field dimensions.",
+    publicNextAction: "Use the verified field dimensions.",
     publicEligibleWhenVerified: true,
     ...overrides,
   };
@@ -88,6 +90,29 @@ function assertDiagnosticPaths(input: unknown, code: string, paths: string[]): v
 
 test("accepts the closed v1 packet contract", () => {
   assert.deepEqual(validateCompileInput(validInput), { ok: true, diagnostics: [] });
+});
+
+test("requires explicit public packet and next-action fields", () => {
+  const missingAlias = structuredClone(validInput);
+  delete (missingAlias.manifest as unknown as { publicAlias?: string }).publicAlias;
+  assertDiagnostic(missingAlias, "PACKET_PUBLIC_ALIAS_REQUIRED", "$.manifest.publicAlias");
+
+  const claim = makeClaim();
+  const missingPublicAction = withClaims(claim) as CompileInput;
+  delete (missingPublicAction.rules.claims[0] as Partial<ClaimRule>).publicNextAction;
+  assertDiagnostic(
+    missingPublicAction,
+    "CLAIM_PUBLIC_NEXT_ACTION_REQUIRED",
+    "$.rules.claims[0].publicNextAction",
+  );
+});
+
+test("rejects a gate with no support or dependency verification route", () => {
+  assertDiagnostic(
+    withClaims(makeClaim({ kind: "gate", anchors: [] })),
+    "GATE_VERIFICATION_ROUTE_REQUIRED",
+    "$.rules.claims[0].anchors",
+  );
 });
 
 test("rejects precomputed status fields in input", () => {

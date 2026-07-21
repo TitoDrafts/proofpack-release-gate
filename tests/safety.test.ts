@@ -52,6 +52,38 @@ test("never leaks an unrelated restricted sentinel into shareable values or Mark
   assert.doesNotMatch(result.artifacts.shareableMarkdown, new RegExp(restrictedSentinel, "u"));
 });
 
+test("never projects internal authored string fields into shareable artifacts", async () => {
+  const input = makeCompileInput([makeClaim()]);
+  const source = input.sources[0]!;
+  const declaration = input.manifest.sources[0]!;
+  const claim = input.rules.claims[0]!;
+  const anchor = claim.anchors[0]!;
+  const internalSourceId = `${restrictedSentinel}-source`;
+
+  input.manifest.packetId = restrictedSentinel;
+  input.manifest.title = restrictedSentinel;
+  input.manifest.rulesFile = `${restrictedSentinel}.json`;
+  input.rules.rulesetId = restrictedSentinel;
+  declaration.id = internalSourceId;
+  declaration.file = `${restrictedSentinel}.txt`;
+  source.id = internalSourceId;
+  source.file = declaration.file;
+  source.content = restrictedSentinel;
+  claim.id = `${restrictedSentinel}-claim`;
+  claim.title = restrictedSentinel;
+  claim.nextAction = restrictedSentinel;
+  claim.stopCondition = restrictedSentinel;
+  anchor.id = `${restrictedSentinel}-anchor`;
+  anchor.sourceId = internalSourceId;
+  anchor.selector = { kind: "line", contains: restrictedSentinel };
+  anchor.value = restrictedSentinel;
+
+  const result = await compileProofPack(input);
+
+  assert.doesNotMatch(JSON.stringify(result.shareable), new RegExp(restrictedSentinel, "u"));
+  assert.doesNotMatch(result.artifacts.shareableMarkdown, new RegExp(restrictedSentinel, "u"));
+});
+
 test("omits a verified claim when any contributing observation is restricted", async () => {
   const source = { ...makeSource("evidence", "MATCH"), safety: "RESTRICTED" as const };
   const input = makeCompileInput([makeClaim({
@@ -180,7 +212,7 @@ test("rejects compiled claims with ambiguous closed lineage safety before eligib
   );
 });
 
-test("rejects raw HTML and authored links from public projection fields", async () => {
+test("rejects raw HTML and authored links from every public projection input", async () => {
   const unsafeValues = [
     "<img src=x onerror=alert(1)>",
     "<!DOCTYPE html>",
@@ -189,20 +221,28 @@ test("rejects raw HTML and authored links from public projection fields", async 
     "![image](https://invalid.example/image.png)",
   ];
 
-  for (const publicTitle of unsafeValues) {
-    const input = makeCompileInput([makeClaim({ publicTitle })]);
-    await assert.rejects(
-      () => compileProofPack(input),
-      (error: unknown) => error instanceof ShareableExportError
-        && error.code === "SHAREABLE_MARKUP_REJECTED",
-    );
+  for (const unsafeValue of unsafeValues) {
+    const inputs = [
+      makeCompileInput([makeClaim({ publicTitle: unsafeValue })]),
+      makeCompileInput([makeClaim({ publicNextAction: unsafeValue })]),
+      makeCompileInput([makeClaim()]),
+    ];
+    inputs[2]!.manifest.publicAlias = unsafeValue;
+
+    for (const input of inputs) {
+      await assert.rejects(
+        () => compileProofPack(input),
+        (error: unknown) => error instanceof ShareableExportError
+          && error.code === "SHAREABLE_MARKUP_REJECTED",
+      );
+    }
   }
 });
 
 test("escapes inert Markdown punctuation in trusted public rule language", async () => {
   const input = makeCompileInput([makeClaim({
     publicTitle: "Outcome *verified* [public]",
-    nextAction: "Use #1 assembly (approved).",
+    publicNextAction: "Use #1 assembly (approved).",
   })]);
   const result = await compileProofPack(input);
 

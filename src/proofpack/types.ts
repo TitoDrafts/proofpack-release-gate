@@ -23,6 +23,7 @@ export interface PacketManifest {
   schemaVersion: "proofpack.packet/v1";
   packetId: string;
   title: string;
+  publicAlias: string;
   asOf: string;
   rulesFile: string;
   sources: SourceDeclaration[];
@@ -52,6 +53,7 @@ export interface ClaimRule {
   requiresVerified?: string[];
   authorityResolverAnchorId?: string;
   nextAction: string;
+  publicNextAction: string;
   stopCondition?: string;
   publicEligibleWhenVerified: boolean;
 }
@@ -127,6 +129,7 @@ export interface ClaimResult {
   evidenceIds: string[];
   missingPredicates: string[];
   nextAction: string;
+  publicNextAction: string;
   stopCondition?: string;
   publicEligible: boolean;
 }
@@ -183,6 +186,7 @@ export interface PackArtifacts {
 export interface CompiledPackStages {
   packetId: string;
   title: string;
+  publicAlias: string;
   asOf: string;
   rulesetId: string;
   rulesetVersion: string;
