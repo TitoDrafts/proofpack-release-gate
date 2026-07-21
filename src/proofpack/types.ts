@@ -76,6 +76,77 @@ export interface Diagnostic {
   message: string;
 }
 
+function compareDiagnosticText(left: string, right: string): number {
+  return left < right ? -1 : left > right ? 1 : 0;
+}
+
+export class CompileError extends Error {
+  readonly diagnostics: Diagnostic[];
+
+  constructor(diagnostics: readonly Diagnostic[]) {
+    const ordered = [...diagnostics].sort((left, right) =>
+      compareDiagnosticText(left.code, right.code)
+      || compareDiagnosticText(left.path, right.path)
+      || compareDiagnosticText(left.message, right.message));
+    super(ordered.map(({ code, path, message }) => `${code} ${path}: ${message}`).join("\n"));
+    this.name = "CompileError";
+    this.diagnostics = ordered;
+  }
+}
+
 export type ValidationResult =
   | { ok: true; diagnostics: [] }
   | { ok: false; diagnostics: Diagnostic[] };
+
+export interface Observation {
+  id: string;
+  claimId: string;
+  anchorId: string;
+  sourceId: string;
+  sourceFile: string;
+  capturedAt: string;
+  locator: string;
+  excerpt: string;
+  excerptDigest: string;
+  effect: EvidenceEffect;
+  strength: EvidenceStrength;
+  safety: SafetyLabel;
+  value?: string;
+}
+
+export interface ClaimResult {
+  id: string;
+  title: string;
+  publicTitle: string;
+  status: ClaimStatus;
+  critical: boolean;
+  reasonCodes: string[];
+  ruleId: string;
+  ruleVersion: string;
+  evidenceIds: string[];
+  missingPredicates: string[];
+  nextAction: string;
+  stopCondition?: string;
+  publicEligible: boolean;
+}
+
+export interface Handoff {
+  decision: OperationalDecision;
+  summary: string;
+  done: string[];
+  notDone: string[];
+  nextAction: string;
+  stopConditions: string[];
+}
+
+export interface CompiledPack {
+  packetId: string;
+  title: string;
+  asOf: string;
+  rulesetId: string;
+  rulesetVersion: string;
+  engineVersion: string;
+  observations: Observation[];
+  claims: ClaimResult[];
+  handoff: Handoff;
+}
