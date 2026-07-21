@@ -9,7 +9,7 @@ ProofPack is not trying to “magically understand any document”; it demonstra
 Submission media:
 
 - **Hosted demo:** [proofpack-release-gate.tito943366.chatgpt.site](https://proofpack-release-gate.tito943366.chatgpt.site)
-- **Three-minute video:** `REPLACE_BEFORE_SUBMISSION_WITH_PUBLIC_YOUTUBE_URL`
+- **Three-minute video:** [youtu.be/-Teh4V2mLVs](https://youtu.be/-Teh4V2mLVs)
 - **Product image:** [1200 × 630 release card](https://proofpack-release-gate.tito943366.chatgpt.site/og.png)
 
 ## Judge quickstart: local CLI demo
@@ -43,7 +43,7 @@ npm run dev
 
 Open the local URL printed by the development server. The single page compiles the bundled raw fixture through the same core used by the CLI; the React components do not contain a second classification implementation.
 
-## Exact 2:55 judge path
+## Alternate 2:55 hands-on judge path
 
 | Time | Screen action | What it proves |
 | --- | --- | --- |
@@ -57,7 +57,7 @@ Open the local URL printed by the development server. The single page compiles t
 | `2:30–2:48` | Show a terminal with a fresh `npm run verify` result and the commit table below. | The product was developed through test-first tasks and reviewed fixes; GPT-5.6 Sol and Codex were build-time collaborators, not runtime dependencies. |
 | `2:48–2:55` | Return to the `HOLD` card and close. | “If the evidence disagrees, release stops—or the exception stays visible.” |
 
-The word-for-word recording script is in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md).
+This alternate live walkthrough is in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md). The submitted 2:50.967 video uses a tighter edited narrative while proving the same bounded flow.
 
 ## Synthetic data, no client data
 
@@ -129,7 +129,7 @@ npm run demo
 npm run privacy:scan
 ```
 
-The automated web checks cover server-rendered product content, built-asset forbidden strings, replay semantics through the real raw-module bundle, and an accessible export-label contract. Responsive CSS and broader accessibility behavior were source-reviewed, but those checks do not replace a real-browser clipboard, download, focus-order, and phone-layout pass.
+The automated web checks cover server-rendered product content, built-asset forbidden strings, replay semantics through the real raw-module bundle, and an accessible export-label contract. Responsive CSS and broader accessibility behavior were source-reviewed; cross-browser clipboard, download, focus-order, and phone-layout behavior remains outside the deterministic core guarantee.
 
 ## GPT-5.6 Sol and Codex build contribution
 
@@ -160,8 +160,8 @@ ProofPack does not make an autonomous fabrication decision. It computes a declar
 - There is no PDF/OCR or email ingestion, authentication, database, persistence, collaboration, connector, notification, or ticket integration.
 - The allowlisted export relies on explicit `PUBLIC`/`RESTRICTED` labels and declared lineage; it is not automatic redaction, anonymity, or PII detection.
 - The receipt is reproducibility evidence, not source authenticity or tamper-proof provenance.
-- Browser clipboard and downloads depend on browser permissions and still need the final hands-on recording pass noted above.
-- The public hosted demo and repository are live; no public YouTube URL, `/feedback` Session ID, or submission confirmation is claimed in this repository yet.
+- Browser clipboard and downloads depend on browser permissions and are not part of the deterministic core guarantee.
+- The public hosted demo, repository, and YouTube video are live; no `/feedback` Session ID or Devpost submission confirmation is claimed in this repository yet.
 
 ## Required `/feedback` step
 

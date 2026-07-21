@@ -68,7 +68,7 @@ The most useful distinction was separating epistemic status from operational act
 
 ## What is next
 
-Before any expansion, complete the final real-browser recording pass for clipboard, download, keyboard focus order, phone layout, and non-local request observation. Possible later work includes carefully validated additional rule packs and packet-authoring tools, but arbitrary uploads, OCR, integrations, and real data should not be added until their validation and safety boundaries are designed and tested.
+Before broader deployment, add a cross-browser QA matrix for clipboard, download, keyboard focus order, phone layout, and non-local request observation. Possible later work includes carefully validated additional rule packs and packet-authoring tools, but arbitrary uploads, OCR, integrations, and real data should not be added until their validation and safety boundaries are designed and tested.
 
 ## Built with
 
@@ -78,7 +78,7 @@ TypeScript 5.9, React 19, vinext/Vite, Node’s test runner through `tsx`, Web C
 
 - **Repository URL:** https://github.com/TitoDrafts/proofpack-release-gate
 - **Hosted demo URL:** https://proofpack-release-gate.tito943366.chatgpt.site
-- **Public YouTube URL — REPLACE BEFORE SUBMISSION:** `REPLACE_WITH_PUBLIC_YOUTUBE_URL`
+- **Public YouTube URL:** https://youtu.be/-Teh4V2mLVs
 - **Primary `/feedback` Session ID — REPLACE BEFORE SUBMISSION:** `REPLACE_WITH_PRIMARY_THREAD_FEEDBACK_SESSION_ID`
 
 ## Final entrant checklist

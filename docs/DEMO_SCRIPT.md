@@ -1,4 +1,4 @@
-# ProofPack exact 2:55 demo script
+# ProofPack alternate 2:55 hands-on judge script
 
 ## Recording setup — not on the clock
 

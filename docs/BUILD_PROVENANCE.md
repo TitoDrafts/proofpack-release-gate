@@ -82,7 +82,7 @@ On 2026-07-21, after the documentation changes:
 - the CLI demo emitted `HOLD` and all five expected statuses.
 - `git diff --check` exited `0` before commit.
 
-These are local command results, not an external certification. The automated web suite does not perform a full real-browser clipboard/download, focus-order, or phone-layout pass; that hands-on pass remains part of recording and final submission preparation.
+These are local command results, not an external certification. The automated web suite does not perform a full cross-browser clipboard/download, focus-order, or phone-layout matrix; those behaviors remain outside the deterministic core guarantee.
 
 ## Claim boundaries
 
