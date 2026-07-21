@@ -1,3 +1,5 @@
+import type { CompileInput } from "./types.ts";
+
 const timestampPattern = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})(Z|([+-])(\d{2}):(\d{2}))$/u;
 
 export function normalizeText(value: string): string {
@@ -158,6 +160,18 @@ function serializeCanonical(value: CanonicalValue): string {
 
 export function canonicalStringify(value: unknown): string {
   return serializeCanonical(canonicalize(value, undefined, new WeakSet<object>(), true));
+}
+
+export function normalizeCompileInput(input: CompileInput): CompileInput {
+  const normalized = JSON.parse(canonicalStringify(input)) as CompileInput;
+  normalized.manifest.asOf = normalizeTimestamp(normalized.manifest.asOf);
+  for (const declaration of normalized.manifest.sources) {
+    declaration.capturedAt = normalizeTimestamp(declaration.capturedAt);
+  }
+  for (const source of normalized.sources) {
+    source.capturedAt = normalizeTimestamp(source.capturedAt);
+  }
+  return normalized;
 }
 
 export function canonicalStringifyPreservingArrayOrder(value: unknown): string {

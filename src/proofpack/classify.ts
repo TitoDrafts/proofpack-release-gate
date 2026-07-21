@@ -186,7 +186,11 @@ export function evaluateGateClaim(context: EvaluationContext): Evaluation {
     .filter(({ status }) => status !== "VERIFIED")
     .map(({ id }) => id);
   if (expectedSupports.length > 0 && missingSupports.length === 0 && unresolvedDependencies.length === 0) {
-    return evaluation("VERIFIED", "GATE_PREREQUISITES_VERIFIED", evidenceIds);
+    return evaluation(
+      "VERIFIED",
+      "GATE_PREREQUISITES_VERIFIED",
+      [...evidenceIds, ...dependencyEvidenceIds(dependencies)],
+    );
   }
   const reasonCode = unresolvedDependencies.length > 0 ? "DEPENDENCIES_UNRESOLVED" : "DECLARED_EVIDENCE_MISSING";
   return evaluation(

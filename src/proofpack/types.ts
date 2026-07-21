@@ -139,7 +139,47 @@ export interface Handoff {
   stopConditions: string[];
 }
 
-export interface CompiledPack {
+export interface ShareableOutcome {
+  title: string;
+  nextStep: string;
+}
+
+/** The exact, digestible allowlist material. The digest is deliberately absent. */
+export interface ShareableDigestMaterial {
+  schemaVersion: "proofpack.shareable/v1";
+  packetAlias: string;
+  verifiedOutcomes: ShareableOutcome[];
+}
+
+export interface ShareablePack extends ShareableDigestMaterial {
+  digest: string;
+}
+
+export interface Receipt {
+  schemaVersion: "proofpack.receipt/v1";
+  algorithm: "SHA-256";
+  packetId: string;
+  rulesetId: string;
+  rulesetVersion: string;
+  engineVersion: string;
+  inputDigest: string;
+  observationDigest: string;
+  ledgerDigest: string;
+  handoffDigest: string;
+  shareableDigest: string;
+}
+
+export type ReceiptDigestFields = Pick<
+  Receipt,
+  "inputDigest" | "observationDigest" | "ledgerDigest" | "handoffDigest" | "shareableDigest"
+>;
+
+export interface PackArtifacts {
+  operatorMarkdown: string;
+  shareableMarkdown: string;
+}
+
+export interface CompiledPackStages {
   packetId: string;
   title: string;
   asOf: string;
@@ -149,4 +189,28 @@ export interface CompiledPack {
   observations: Observation[];
   claims: ClaimResult[];
   handoff: Handoff;
+}
+
+export interface CompiledPack extends CompiledPackStages {
+  shareable: ShareablePack;
+  receipt: Receipt;
+  artifacts: PackArtifacts;
+}
+
+export interface ReceiptStages {
+  input: CompileInput;
+  observations: readonly Observation[];
+  claims: readonly ClaimResult[];
+  handoff: Handoff;
+  shareable: ShareablePack;
+}
+
+export interface PackDiff {
+  addedObservationIds: string[];
+  removedObservationIds: string[];
+  changedClaimIds: string[];
+  unchangedClaimIds: string[];
+  changedHandoffFields: Array<keyof Handoff>;
+  beforeReceiptDigests: ReceiptDigestFields;
+  afterReceiptDigests: ReceiptDigestFields;
 }

@@ -1,8 +1,20 @@
-import { canonicalStringify, normalizeTimestamp } from "./canonical.ts";
+import { normalizeCompileInput } from "./canonical.ts";
 import { classifyClaims } from "./classify.ts";
 import { resolveAnchors } from "./extract.ts";
 import { deriveHandoff } from "./handoff.ts";
-import { CompileError, type CompiledPack, type CompileInput, type Diagnostic } from "./types.ts";
+import { buildReceipt } from "./receipt.ts";
+import {
+  buildShareableProjection,
+  renderOperatorMarkdown,
+  renderShareableMarkdown,
+} from "./safety.ts";
+import {
+  CompileError,
+  type CompiledPack,
+  type CompiledPackStages,
+  type CompileInput,
+  type Diagnostic,
+} from "./types.ts";
 import { validateCompileInput } from "./validate.ts";
 
 function invariantDiagnostic(code: string, message: string): Diagnostic {
@@ -11,15 +23,7 @@ function invariantDiagnostic(code: string, message: string): Diagnostic {
 
 function normalizeInput(input: CompileInput): CompileInput {
   try {
-    const normalized = JSON.parse(canonicalStringify(input)) as CompileInput;
-    normalized.manifest.asOf = normalizeTimestamp(normalized.manifest.asOf);
-    for (const declaration of normalized.manifest.sources) {
-      declaration.capturedAt = normalizeTimestamp(declaration.capturedAt);
-    }
-    for (const source of normalized.sources) {
-      source.capturedAt = normalizeTimestamp(source.capturedAt);
-    }
-    return normalized;
+    return normalizeCompileInput(input);
   } catch {
     throw new CompileError([
       invariantDiagnostic("CANONICALIZATION_FAILED", "Compile input could not be represented canonically."),
@@ -54,7 +58,7 @@ export async function compileProofPack(input: CompileInput): Promise<CompiledPac
   const handoff = deriveHandoff(claimsInRuleOrder);
   const claims = [...claimsInRuleOrder].sort((left, right) => left.id < right.id ? -1 : left.id > right.id ? 1 : 0);
 
-  return {
+  const stages: CompiledPackStages = {
     packetId: normalized.manifest.packetId,
     title: normalized.manifest.title,
     asOf: normalized.manifest.asOf,
@@ -64,5 +68,21 @@ export async function compileProofPack(input: CompileInput): Promise<CompiledPac
     observations,
     claims,
     handoff,
+  };
+  const shareable = await buildShareableProjection(stages);
+  const receipt = await buildReceipt({
+    input: normalized,
+    observations,
+    claims,
+    handoff,
+    shareable,
+  });
+  const packWithReceipt = { ...stages, shareable, receipt };
+  return {
+    ...packWithReceipt,
+    artifacts: {
+      operatorMarkdown: renderOperatorMarkdown(packWithReceipt),
+      shareableMarkdown: await renderShareableMarkdown(shareable),
+    },
   };
 }

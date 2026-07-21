@@ -26,6 +26,37 @@ export async function loadProjectAlder(): Promise<CompileInput> {
   return { manifest, rules, sources };
 }
 
+export function appendReceipt(input: CompileInput, receipt: string): CompileInput {
+  const replay = structuredClone(input);
+  const source = replay.sources.find(({ id }) => id === "incoming-receipts");
+  if (source === undefined) {
+    throw new Error("TEST_FIXTURE_INCOMING_RECEIPTS_MISSING");
+  }
+  source.content = `${source.content}${source.content.length === 0 || source.content.endsWith("\n") ? "" : "\n"}${receipt}\n`;
+  return replay;
+}
+
+export function addRestrictedSentinelSource(input: CompileInput, sentinel: string): CompileInput {
+  const seeded = structuredClone(input);
+  const source: SourceDocument = {
+    id: "restricted-sentinel",
+    file: "restricted-sentinel.log",
+    mediaType: "text/plain",
+    capturedAt: "2026-07-21T04:30:00.000Z",
+    safety: "RESTRICTED",
+    content: `internal_note value=${sentinel}\n`,
+  };
+  seeded.sources.push(source);
+  seeded.manifest.sources.push({
+    id: source.id,
+    file: source.file,
+    mediaType: source.mediaType,
+    capturedAt: source.capturedAt,
+    safety: source.safety,
+  });
+  return seeded;
+}
+
 export function makeSource(
   id: string,
   content: string,
