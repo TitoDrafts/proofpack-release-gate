@@ -1,4 +1,4 @@
-import { canonicalStringify } from "./canonical.ts";
+import { canonicalStringify, normalizeTimestamp } from "./canonical.ts";
 import { classifyClaims } from "./classify.ts";
 import { resolveAnchors } from "./extract.ts";
 import { deriveHandoff } from "./handoff.ts";
@@ -11,7 +11,15 @@ function invariantDiagnostic(code: string, message: string): Diagnostic {
 
 function normalizeInput(input: CompileInput): CompileInput {
   try {
-    return JSON.parse(canonicalStringify(input)) as CompileInput;
+    const normalized = JSON.parse(canonicalStringify(input)) as CompileInput;
+    normalized.manifest.asOf = normalizeTimestamp(normalized.manifest.asOf);
+    for (const declaration of normalized.manifest.sources) {
+      declaration.capturedAt = normalizeTimestamp(declaration.capturedAt);
+    }
+    for (const source of normalized.sources) {
+      source.capturedAt = normalizeTimestamp(source.capturedAt);
+    }
+    return normalized;
   } catch {
     throw new CompileError([
       invariantDiagnostic("CANONICALIZATION_FAILED", "Compile input could not be represented canonically."),

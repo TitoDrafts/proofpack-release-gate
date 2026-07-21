@@ -7,7 +7,7 @@ import {
   normalizeTimestamp,
   stableId,
 } from "../src/proofpack/index.ts";
-import type { CompileInput } from "../src/proofpack/types.ts";
+import type { CompileInput, Selector, SourceMediaType } from "../src/proofpack/types.ts";
 import {
   loadProjectAlder,
   makeAnchor,
@@ -293,6 +293,47 @@ test("rejects extractor invariants atomically with stable anchor diagnostics", a
   );
 });
 
+const incompatibleSelectorCases: ReadonlyArray<{
+  name: string;
+  selector: Selector;
+  mediaType: SourceMediaType;
+  content: string;
+}> = [
+  {
+    name: "line selector on JSON",
+    selector: { kind: "line", contains: "MATCH" },
+    mediaType: "application/json",
+    content: "{\"value\":\"MATCH\"}",
+  },
+  {
+    name: "log selector on Markdown",
+    selector: { kind: "log", event: "event", fields: { ready: true } },
+    mediaType: "text/markdown",
+    content: "event ready=true",
+  },
+  {
+    name: "JSON selector on plain text",
+    selector: { kind: "json", pointer: "/value", equals: "MATCH" },
+    mediaType: "text/plain",
+    content: "{\"value\":\"MATCH\"}",
+  },
+];
+
+for (const { name, selector, mediaType, content } of incompatibleSelectorCases) {
+  test(`rejects ${name} atomically`, async () => {
+    const input = makeCompileInput([makeClaim({
+      anchors: [makeAnchor({ selector })],
+    })], [makeSource("evidence", content, mediaType)]);
+
+    await assert.rejects(
+      () => compileProofPack(input),
+      (error: unknown) => error instanceof Error
+        && error.message.includes("SELECTOR_MEDIA_MISMATCH")
+        && error.message.includes("$.rules.claims[id=claim].anchors[id=evidence-anchor].selector"),
+    );
+  });
+}
+
 test("resolves escaped JSON pointers and presence without truthiness coercion", async () => {
   const input = makeCompileInput([makeClaim({
     anchors: [makeAnchor({
@@ -306,6 +347,22 @@ test("resolves escaped JSON pointers and presence without truthiness coercion", 
   assert.deepEqual(
     result.observations.map(({ locator, excerpt }) => ({ locator, excerpt })),
     [{ locator: "/a~1b/~0flag", excerpt: "false" }],
+  );
+});
+
+test("resolves the RFC 6901 root JSON pointer", async () => {
+  const input = makeCompileInput([makeClaim({
+    anchors: [makeAnchor({
+      selector: { kind: "json", pointer: "", present: true },
+    })],
+  })], [makeSource("evidence", "{\"status\":\"OK\"}", "application/json")]);
+
+  const result = await compileProofPack(input);
+
+  assert.equal(result.claims[0]?.status, "VERIFIED");
+  assert.deepEqual(
+    result.observations.map(({ locator, excerpt }) => ({ locator, excerpt })),
+    [{ locator: "", excerpt: "{\"status\":\"OK\"}" }],
   );
 });
 
@@ -325,6 +382,23 @@ test("preserves ordered JSON arrays in exact presence excerpts", async () => {
   assert.equal(
     result.observations[0]?.excerpt,
     "[{\"capturedAt\":\"2026-07-21T07:00:00.000+02:00\",\"id\":\"b\",\"value\":\"second\"},{\"id\":\"a\",\"value\":\"first\"}]",
+  );
+});
+
+test("matches log fields named capturedAt without rewriting their exact token", async () => {
+  const capturedAt = "2026-07-21T07:00:00.000+02:00";
+  const input = makeCompileInput([makeClaim({
+    anchors: [makeAnchor({
+      selector: { kind: "log", event: "event", fields: { capturedAt } },
+    })],
+  })], [makeSource("evidence", `event capturedAt=${capturedAt}`)]);
+
+  const result = await compileProofPack(input);
+
+  assert.equal(result.claims[0]?.status, "VERIFIED");
+  assert.deepEqual(
+    result.observations.map(({ locator, excerpt }) => ({ locator, excerpt })),
+    [{ locator: "event:event@line:1", excerpt: `event capturedAt=${capturedAt}` }],
   );
 });
 

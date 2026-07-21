@@ -131,15 +131,21 @@ export function evaluateExclusiveClaim(context: EvaluationContext): Evaluation {
   const resolver = claim.authorityResolverAnchorId === undefined
     ? undefined
     : asserted.find(({ anchorId }) => anchorId === claim.authorityResolverAnchorId);
+  const competingValues = sortedUnique(asserted.flatMap(({ anchorId, value }) =>
+    anchorId === claim.authorityResolverAnchorId || value === undefined ? [] : [value]));
+  const resolverSelectsCompetingValue = resolver?.value !== undefined
+    && competingValues.includes(resolver.value);
 
-  if (activeValues.length > 1 && resolver === undefined) {
-    const missingResolver = claim.authorityResolverAnchorId === undefined ? [] : [claim.authorityResolverAnchorId];
+  if (activeValues.length > 1 && !resolverSelectsCompetingValue) {
+    const missingResolver = claim.authorityResolverAnchorId !== undefined && resolver === undefined
+      ? [claim.authorityResolverAnchorId]
+      : [];
     return evaluation("CONFLICTED", "EXCLUSIVE_VALUES_UNRESOLVED", evidenceIds, missingResolver);
   }
   if (hasQualifyingContradiction(observations)) {
     return evaluation("CONFLICTED", "QUALIFYING_CONTRADICTION", evidenceIds);
   }
-  if (activeValues.length > 1 && resolver !== undefined) {
+  if (activeValues.length > 1 && resolverSelectsCompetingValue) {
     return evaluation("VERIFIED", "AUTHORITY_RESOLVER_APPLIED", evidenceIds);
   }
   if (activeValues.length === 1) {

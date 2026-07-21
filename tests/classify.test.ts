@@ -151,6 +151,24 @@ test("uses a matched exclusive authority resolver to defeat other active values"
   assert.deepEqual(result.claims[0]?.reasonCodes, ["AUTHORITY_RESOLVER_APPLIED"]);
 });
 
+test("keeps competing values conflicted when the observed resolver asserts an unrelated value", async () => {
+  const input = makeCompileInput([makeClaim({
+    kind: "exclusive",
+    anchors: [
+      makeAnchor({ id: "value-a", selector: { kind: "line", contains: "VALUE A" }, effect: "ASSERT_VALUE", value: "A" }),
+      makeAnchor({ id: "value-b", selector: { kind: "line", contains: "VALUE B" }, effect: "ASSERT_VALUE", value: "B" }),
+      makeAnchor({ id: "resolver", selector: { kind: "line", contains: "AUTHORITY C" }, effect: "ASSERT_VALUE", value: "C" }),
+    ],
+    authorityResolverAnchorId: "resolver",
+  })], [makeSource("evidence", "VALUE A\nVALUE B\nAUTHORITY C")]);
+
+  const result = await compileProofPack(input);
+
+  assert.equal(result.claims[0]?.status, "CONFLICTED");
+  assert.deepEqual(result.claims[0]?.reasonCodes, ["EXCLUSIVE_VALUES_UNRESOLVED"]);
+  assert.deepEqual(result.claims[0]?.missingPredicates, []);
+});
+
 test("leaves distinct active values conflicted when the resolver does not match", async () => {
   const input = makeCompileInput([makeClaim({
     kind: "exclusive",
@@ -211,13 +229,20 @@ test("requires verified dependencies for a named inference and emits its premise
   const result = await compileProofPack(makeCompileInput([inference, directPremise]));
   const inferred = result.claims.find(({ id }) => id === "inference");
   const premise = result.claims.find(({ id }) => id === "premise");
+  const premiseEvidenceIds = result.observations
+    .filter(({ anchorId }) => anchorId === "premise-direct")
+    .map(({ id }) => id)
+    .sort();
+  const expectedInferenceEvidenceIds = result.observations
+    .filter(({ anchorId }) => anchorId === "premise-direct" || anchorId === "inference-corroboration")
+    .map(({ id }) => id)
+    .sort();
 
   assert.equal(inferred?.status, "INFERRED");
-  assert.deepEqual(inferred?.evidenceIds, [...new Set([
-    ...(inferred?.evidenceIds ?? []),
-    ...(premise?.evidenceIds ?? []),
-  ])].sort());
-  assert.equal(premise?.evidenceIds.every((id) => inferred?.evidenceIds.includes(id)), true);
+  assert.equal(premiseEvidenceIds.length, 1);
+  assert.equal(expectedInferenceEvidenceIds.length, 2);
+  assert.deepEqual(premise?.evidenceIds, premiseEvidenceIds);
+  assert.deepEqual(inferred?.evidenceIds, expectedInferenceEvidenceIds);
 });
 
 test("prefers complete direct predicates over complete inference premises", async () => {

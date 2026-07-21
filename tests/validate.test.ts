@@ -329,6 +329,14 @@ test("rejects a non-local resolver on an exclusive claim", () => {
   );
 });
 
+test("accepts the RFC 6901 root JSON pointer", () => {
+  const input = withClaims(makeClaim({
+    anchors: [makeAnchor({ selector: { kind: "json", pointer: "", present: true } })],
+  }));
+
+  assert.deepEqual(validateCompileInput(input), { ok: true, diagnostics: [] });
+});
+
 for (const kind of ["direct", "exclusive"] as const) {
   test(`rejects requiresVerified on a ${kind} claim`, () => {
     const base = makeClaim({ id: "base" });

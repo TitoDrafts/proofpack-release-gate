@@ -231,6 +231,14 @@ function resolveMatches(
     }
     return resolveLogAnchor(claim, anchor, source.content, diagnostics);
   }
+  if (source.mediaType !== "text/markdown" && source.mediaType !== "text/plain") {
+    diagnostics.push(diagnostic(
+      "SELECTOR_MEDIA_MISMATCH",
+      path,
+      "A line selector requires a text/markdown or text/plain source.",
+    ));
+    return [];
+  }
   return resolveLineAnchor(anchor, source.content);
 }
 

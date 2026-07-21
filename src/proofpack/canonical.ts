@@ -89,9 +89,7 @@ function canonicalize(
     return value;
   }
   if (typeof value === "string") {
-    return semanticMode && (parentKey === "capturedAt" || parentKey === "asOf")
-      ? normalizeTimestamp(value)
-      : normalizeText(value);
+    return normalizeText(value);
   }
   if (typeof value === "number") {
     if (!Number.isFinite(value)) {

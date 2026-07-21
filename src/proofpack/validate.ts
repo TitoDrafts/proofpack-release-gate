@@ -84,6 +84,21 @@ function requiredString(
   return candidate;
 }
 
+function requiredStringAllowEmpty(
+  value: UnknownRecord,
+  key: string,
+  diagnostics: Diagnostic[],
+  code: string,
+  path: string,
+): string | undefined {
+  const candidate = value[key];
+  if (!hasOwn(value, key) || typeof candidate !== "string") {
+    addDiagnostic(diagnostics, code, `${path}.${key}`, "A string is required.");
+    return undefined;
+  }
+  return candidate;
+}
+
 function optionalString(
   value: UnknownRecord,
   key: string,
@@ -276,7 +291,7 @@ function validateSelector(value: unknown, path: string, diagnostics: Diagnostic[
   }
   if (kind === "json") {
     rejectUnknownFields(selector, ["kind", "pointer", "equals", "present"], diagnostics, "SELECTOR_UNKNOWN_FIELD", path);
-    const pointer = requiredString(selector, "pointer", diagnostics, "SELECTOR_POINTER_REQUIRED", path);
+    const pointer = requiredStringAllowEmpty(selector, "pointer", diagnostics, "SELECTOR_POINTER_REQUIRED", path);
     if (pointer !== undefined && !isValidJsonPointer(pointer)) {
       addDiagnostic(diagnostics, "JSON_POINTER_INVALID", `${path}.pointer`, "JSON selector pointer is malformed.");
     }
